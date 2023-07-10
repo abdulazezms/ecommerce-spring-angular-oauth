@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet author="Aziz" id="1">
+        <createTable tableName="t_products">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sku" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="unit_price" type="DECIMAL(13, 2)"/>
+            <column name="image_url" type="VARCHAR(255)"/>
+            <column defaultValueBoolean="true" name="active" type="BIT(1)"/>
+            <column name="units_in_stock" type="INT"/>
+            <column name="date_created" type="datetime"/>
+            <column name="last_updated" type="datetime"/>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Aziz" id="2">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="t_products" constraintName="fk_category" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="id" referencedTableName="t_products_categories" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Aziz" id="3">
+        <createIndex indexName="fk_category" tableName="t_products">
+            <column name="category_id"/>
+        </createIndex>
+    </changeSet>
+
+
+</databaseChangeLog>
