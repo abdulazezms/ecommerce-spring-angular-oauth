@@ -47,4 +47,10 @@ env:
 #    metrics:
 #      enabled: true
 #    prometheus:
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+
 #      enabled: true
