@@ -1,0 +1,34 @@
+<table class="table">
+  <thead class="table-dark">
+    <tr>
+      <th>Image</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Units in Stock</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let temp of products">
+      <td class="align-middle">
+        <img src="{{ temp.imageUrl }}" width="50" height="50" />
+      </td>
+      <td class="align-middle">{{ temp.name }}</td>
+      <td class="align-middle">
+        {{ temp.unitsInStock }}
+      </td>
+      <td
+        class="align-middle"
+        style="color: green"
+        *ngIf="temp.unitPrice > 25; else elseBlock"
+      >
+        {{ temp.unitPrice | currency : "USD" }}
+      </td>
+      <ng-template #elseBlock
+        ><td class="align-middle">
+          {{ temp.unitPrice | currency : "USD" }}
+        </td></ng-template
+      >
+    </tr>
+  </tbody>
+</table>
