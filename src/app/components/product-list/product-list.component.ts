@@ -12,6 +12,8 @@ import { switchMap } from 'rxjs/operators';
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
   currentCategoryId: number = 1;
+  currentCategoryName: string = '';
+
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService
@@ -25,7 +27,11 @@ export class ProductListComponent implements OnInit {
   listProducts() {
     const hasCategoryId = this.route.snapshot.paramMap.has('id');
     if (hasCategoryId) {
+      // get the "id" param
       this.currentCategoryId = +this.route.snapshot.paramMap.get('id')!;
+      // get the "name" param
+      this.currentCategoryName = this.route.snapshot.paramMap.get('name')!;
+
       this.productService
         .getProductsListByCategory(this.currentCategoryId)
         .subscribe(
@@ -35,6 +41,7 @@ export class ProductListComponent implements OnInit {
           }
         );
     } else {
+      this.currentCategoryName = 'All';
       this.productService.getProductsList().subscribe((data: Product[]) => {
         this.products = data;
       });
