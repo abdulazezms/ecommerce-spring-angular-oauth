@@ -1,0 +1,53 @@
+<!-- MAIN CONTENT-->
+<div class="main-content">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Loop over list of products -->
+        <div *ngFor="let temp of products" class="col-md-3">
+          <div class="product-box">
+            <img src="{{ temp.imageUrl }}" class="img-responsive" />
+            <h1>{{ temp.name }}</h1>
+            <!-- <h2>{{ temp.description }}</h2> -->
+            <div class="price">{{ temp.unitPrice | currency : "SR" }}</div>
+            <a href="#" class="primary-btn">Add to cart</a>
+          </div>
+        </div>
+
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="footer-pagination">
+        <div class="row">
+          <div class="col-md-6"></div>
+          <div class="col-md-3">
+            <div class="items">
+              <label>Item per page</label>
+              <select>
+                <option>10</option>
+                <option>20</option>
+                <option>30</option>
+                <option>40</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="number">1 - 10 of 100</div>
+          </div>
+          <div class="col-md-1">
+            <div class="arrows">
+              <a href="#"
+                ><i class="fa fa-angle-left" aria-hidden="true"></i
+              ></a>
+              <a href="#"
+                ><i class="fa fa-angle-right" aria-hidden="true"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- END MAIN CONTENT-->
