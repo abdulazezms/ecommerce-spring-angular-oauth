@@ -10,9 +10,12 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
     <changeSet author="Aziz" id="1">
-        <insert tableName="t_products_categories">
-            <column name="category_name" value="BOOKS"/>
-        </insert>
+        <sql>
+            INSERT INTO t_products_categories(category_name) VALUES ('Books');
+            INSERT INTO t_products_categories(category_name) VALUES ('Coffee Mugs');
+            INSERT INTO t_products_categories(category_name) VALUES ('Mouse Pads');
+            INSERT INTO t_products_categories(category_name) VALUES ('Luggage Tags');
+        </sql>
     </changeSet>
 
 </databaseChangeLog>
