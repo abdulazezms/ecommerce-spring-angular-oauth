@@ -10,6 +10,7 @@ import { ProductCategoryComponent } from './components/product-category/product-
 import { SearchComponent } from './components/search/search.component';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 const routes: Routes = [
   { path: 'products/:id', component: ProductDetailsComponent },
@@ -29,7 +30,7 @@ const routes: Routes = [
     ProductDetailsComponent,
     PageNotFoundComponent,
   ],
-  imports: [BrowserModule, HttpClientModule, RouterModule.forRoot(routes)],
+  imports: [BrowserModule, HttpClientModule, RouterModule.forRoot(routes), NgbModule],
   providers: [ProductService],
   bootstrap: [AppComponent],
 })
