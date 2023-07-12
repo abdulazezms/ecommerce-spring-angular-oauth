@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin("http://localhost:4200")
 public interface ProductDao extends JpaRepository<Product, Long> {
-    //exposes endpoint /search/<query-method-name>
+    //exposes endpoint at /search/<query-method-name>
     Page<Product> findByProductCategoryId(@Param("id") Long id, Pageable pageable);
+    Page<Product> findByNameContaining(@Param("name") String name, Pageable pageable);
 }
