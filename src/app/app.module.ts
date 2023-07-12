@@ -9,6 +9,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProductCategoryComponent } from './components/product-category/product-category.component';
 import { SearchComponent } from './components/search/search.component';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   { path: 'products/:id', component: ProductDetailsComponent },
@@ -17,7 +18,7 @@ const routes: Routes = [
   { path: 'category', component: ProductListComponent },
   { path: 'products', component: ProductListComponent },
   { path: '', redirectTo: '/products', pathMatch: 'full' },
-  { path: '**', redirectTo: '/products', pathMatch: 'full' },
+  { path: '**', component: PageNotFoundComponent },
 ];
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ const routes: Routes = [
     ProductCategoryComponent,
     SearchComponent,
     ProductDetailsComponent,
+    PageNotFoundComponent,
   ],
   imports: [BrowserModule, HttpClientModule, RouterModule.forRoot(routes)],
   providers: [ProductService],
