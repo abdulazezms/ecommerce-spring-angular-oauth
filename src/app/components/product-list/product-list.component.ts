@@ -12,12 +12,15 @@ import { switchMap } from 'rxjs/operators';
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
   currentCategoryId: number = 1;
-  currentCategoryName: string = '';
+  currentCategoryName: string = 'None';
+  keyword: string = '';
+  searchMode: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService
   ) {}
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(() => {
       this.listProducts();
@@ -25,13 +28,28 @@ export class ProductListComponent implements OnInit {
   }
 
   listProducts() {
+    this.searchMode = this.route.snapshot.paramMap.has('keyword');
+    if (this.searchMode) {
+      this.handleSearchProducts();
+    } else {
+      this.handleListProducts();
+    }
+  }
+
+  handleSearchProducts() {
+    this.keyword = this.route.snapshot.paramMap.get('keyword')!;
+    this.productService
+      .searchProducts(this.keyword)
+      .subscribe((data: Product[]) => {
+        this.products = data;
+      });
+  }
+
+  handleListProducts() {
     const hasCategoryId = this.route.snapshot.paramMap.has('id');
     if (hasCategoryId) {
-      // get the "id" param
       this.currentCategoryId = +this.route.snapshot.paramMap.get('id')!;
-      // get the "name" param
       this.currentCategoryName = this.route.snapshot.paramMap.get('name')!;
-
       this.productService
         .getProductsListByCategory(this.currentCategoryId)
         .subscribe(
