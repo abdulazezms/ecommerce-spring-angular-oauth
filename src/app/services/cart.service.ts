@@ -11,6 +11,8 @@ export class CartService {
   //a subject, a subclass of observable, is used to publish events to all subscribers in multicast mode, unlike unicast with observables.
   totalPrice: Subject<number> = new Subject<number>();
   totalQuantity: Subject<number> = new Subject<number>();
+  shippingFee: number = 10;
+
   constructor() {
     this.cartItems =
       JSON.parse(sessionStorage.getItem('cartItems')!) != null
