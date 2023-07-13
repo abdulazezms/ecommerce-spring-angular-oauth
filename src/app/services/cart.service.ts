@@ -32,6 +32,16 @@ export class CartService {
     this.computeCartTotals();
   }
 
+  removeCartItem(cartItem: CartItem) {
+    let index = this.getCartItemIndex(cartItem);
+    if (index !== -1) {
+      this.cartItems[index].quantity--;
+      if (this.cartItems[index].quantity === 0)
+        this.removeCartItemAtIndex(index);
+      this.computeCartTotals();
+    }
+  }
+
   computeCartTotals() {
     let totalPrice = 0,
       totalQuantity = 0;
@@ -51,5 +61,23 @@ export class CartService {
 
   persistCartItems() {
     sessionStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+  }
+
+  getCartItemIndex(cartItem: CartItem): number {
+    return this.cartItems.findIndex(
+      (value: CartItem) => value.id === cartItem.id
+    );
+  }
+
+  removeCartItemAtIndex(index: number) {
+    this.cartItems.splice(index, 1);
+  }
+
+  remove(cartItem: CartItem) {
+    let index = this.getCartItemIndex(cartItem);
+    if (index !== -1) {
+      this.removeCartItemAtIndex(index);
+      this.computeCartTotals();
+    }
   }
 }
