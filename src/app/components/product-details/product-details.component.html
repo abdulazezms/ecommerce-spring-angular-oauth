@@ -23,19 +23,17 @@
             {{ currentProduct?.description }}
           </p>
           <div class="price">
-            {{ currentProduct?.unitPrice | currency : "SR" }}
+            {{ currentProduct?.unitPrice | currency : "USD" }}
           </div>
           <p *ngIf="currentProduct">
-            <a href="shopping-detail.html" class="primary-btn">Add to cart</a>
+            <button class="btn btn-primary btn-sm" (click)="addToCart()">
+              Add to cart
+            </button>
           </p>
 
           <a routerLink="/products" class="mt-5">
-            <button
-              type="button"
-              aria-label="Back To Homepage"
-              class="btn btn-primary"
-            >
-              Back to product list
+            <button class="btn btn-lg text-center">
+              <span><i class="fa fa-arrow-left fa-3x"></i></span>
             </button>
           </a>
         </div>
