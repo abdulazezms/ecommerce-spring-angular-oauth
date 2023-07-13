@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/common/product';
 import { ProductService } from 'src/app/services/product.service';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { GetResponseProducts } from 'src/app/services/product.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -11,10 +12,18 @@ import { switchMap } from 'rxjs/operators';
 })
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
+
   currentCategoryId: number = 1;
+  previousCategoryId: number = 1;
   currentCategoryName: string = 'None';
-  keyword: string = '';
+
+  currentKeyword: string = '';
+  previousKeyword: string = '';
   searchMode: boolean = false;
+
+  pageNumber: number = 1;
+  pageSize: number = 10;
+  totalElements: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,32 +46,54 @@ export class ProductListComponent implements OnInit {
   }
 
   handleSearchProducts() {
-    this.keyword = this.route.snapshot.paramMap.get('keyword')!;
-    this.productService
-      .searchProducts(this.keyword)
-      .subscribe((data: Product[]) => {
-        this.products = data;
-      });
+    this.currentKeyword = this.route.snapshot.paramMap.get('keyword')!;
+    this.pageNumber =
+      this.currentKeyword == this.previousKeyword ? this.pageNumber : 1; //reset page number when the keyword changes.
+    this.previousKeyword = this.currentKeyword;
+    this.updateProducts(
+      this.productService.searchProducts(
+        this.currentKeyword,
+        this.pageNumber - 1,
+        this.pageSize
+      )
+    );
   }
 
   handleListProducts() {
-    const hasCategoryId = this.route.snapshot.paramMap.has('id');
-    if (hasCategoryId) {
+    if (this.route.snapshot.paramMap.has('id')) {
       this.currentCategoryId = +this.route.snapshot.paramMap.get('id')!;
       this.currentCategoryName = this.route.snapshot.paramMap.get('name')!;
-      this.productService
-        .getProductsListByCategory(this.currentCategoryId)
-        .subscribe(
-          /* The method will run in an asychronous fashion.*/
-          (data: Product[]) => {
-            this.products = data;
-          }
-        );
+      this.pageNumber =
+        this.currentCategoryId == this.previousCategoryId ? this.pageNumber : 1; //reset page number when the category number changes.
+      this.previousCategoryId = this.currentCategoryId;
+
+      this.updateProducts(
+        this.productService.getProductsListByCategory(
+          this.currentCategoryId,
+          this.pageNumber - 1,
+          this.pageSize
+        )
+      );
     } else {
       this.currentCategoryName = 'All';
-      this.productService.getProductsList().subscribe((data: Product[]) => {
-        this.products = data;
-      });
+      this.updateProducts(
+        this.productService.getProductsList(this.pageNumber - 1, this.pageSize)
+      );
     }
+  }
+
+  updateProducts(obs: Observable<GetResponseProducts>) {
+    obs.subscribe((data: GetResponseProducts) => {
+      this.products = data._embedded.products;
+      this.pageNumber = data.page.number + 1;
+      this.pageSize = data.page.size;
+      this.totalElements = data.page.totalElements;
+    });
+  }
+
+  updatePageSize(pageSize: string) {
+    this.pageSize = +pageSize;
+    this.pageNumber = 1;
+    this.listProducts();
   }
 }
