@@ -9,22 +9,41 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-    <changeSet author="Aziz" id="1">
+    <changeSet id="1" author="Aziz" >
         <preConditions onFail="HALT">
             <not>
-                <tableExists tableName="t_products_categories"/>
+                <tableExists tableName="t_cities"/>
             </not>
         </preConditions>
-        <createTable tableName="t_products_categories">
+
+        <createTable tableName="t_cities">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="category_name" type="VARCHAR(255)"/>
+
+            <column name="name" type="VARCHAR(255)"/>
+
+            <column name="t_countries_id" type="BIGINT"/>
         </createTable>
     </changeSet>
 
-    <changeSet author="Aziz" id="2">
-        <sqlFile relativeToChangelogFile="true" path="./inserts/categories.sql"/>
+    <changeSet id="2" author="Aziz">
+        <addForeignKeyConstraint baseTableName="t_cities" baseColumnNames="t_countries_id"
+                                 constraintName="fk_t_cities_t_countries_id"
+                                 referencedTableName="t_countries"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="3" author="Aziz">
+        <addUniqueConstraint
+                columnNames="t_countries_id, name"
+                constraintName="uq_t_cities_t_countries_id_name"
+                tableName="t_cities"
+        />
+    </changeSet>
+
+    <changeSet id="4" author="Aziz">
+        <sqlFile path="./inserts/countries_and_cities.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
 </databaseChangeLog>

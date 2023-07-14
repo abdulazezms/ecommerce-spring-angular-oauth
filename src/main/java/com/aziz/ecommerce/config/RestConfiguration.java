@@ -1,5 +1,7 @@
 package com.aziz.ecommerce.config;
 
+import com.aziz.ecommerce.domain.City;
+import com.aziz.ecommerce.domain.Country;
 import com.aziz.ecommerce.domain.Product;
 import com.aziz.ecommerce.domain.ProductCategory;
 import jakarta.persistence.EntityManager;
@@ -26,19 +28,11 @@ public class RestConfiguration implements RepositoryRestConfigurer {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         HttpMethod[] unsupportedHttpMethods = {HttpMethod.PATCH, HttpMethod.DELETE, HttpMethod.PUT, HttpMethod.POST};
-        config
-                .getExposureConfiguration()
-                .forDomainType(Product.class)
-                .withItemExposure(((metadata, httpMethods) -> httpMethods.disable(unsupportedHttpMethods)))
-                .withCollectionExposure(((metadata, httpMethods) -> httpMethods.disable(unsupportedHttpMethods)));
-
-        config
-                .getExposureConfiguration()
-                .forDomainType(ProductCategory.class)
-                .withItemExposure(((metadata, httpMethods) -> httpMethods.disable(unsupportedHttpMethods)))
-                .withCollectionExposure(((metadata, httpMethods) -> httpMethods.disable(unsupportedHttpMethods)));
+        disableHttpMethods(unsupportedHttpMethods, config, Product.class);
+        disableHttpMethods(unsupportedHttpMethods, config, ProductCategory.class);
+        disableHttpMethods(unsupportedHttpMethods, config, Country.class);
+        disableHttpMethods(unsupportedHttpMethods, config, City.class);
         exposeIds(config);
-
     }
 
     /**
@@ -53,5 +47,13 @@ public class RestConfiguration implements RepositoryRestConfigurer {
         //expose the ID of each entity.
         config.exposeIdsFor(entityClasses.toArray(new Class[0]));
 
+    }
+
+    private void disableHttpMethods(HttpMethod[] unsupportedHttpMethods, RepositoryRestConfiguration config, Class<?> c){
+        config
+                .getExposureConfiguration()
+                .forDomainType(c)
+                .withItemExposure(((metadata, httpMethods) -> httpMethods.disable(unsupportedHttpMethods)))
+                .withCollectionExposure(((metadata, httpMethods) -> httpMethods.disable(unsupportedHttpMethods)));
     }
 }

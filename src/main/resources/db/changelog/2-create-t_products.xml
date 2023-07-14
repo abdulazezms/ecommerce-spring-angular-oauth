@@ -10,6 +10,12 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
     <changeSet author="Aziz" id="1">
+        <preConditions onFail="HALT">
+            <not>
+                <tableExists tableName="t_products"/>
+            </not>
+        </preConditions>
+
         <createTable tableName="t_products">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -40,5 +46,8 @@
         </createIndex>
     </changeSet>
 
+    <changeSet author="Aziz" id="4">
+        <sqlFile path="./inserts/products.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
 </databaseChangeLog>

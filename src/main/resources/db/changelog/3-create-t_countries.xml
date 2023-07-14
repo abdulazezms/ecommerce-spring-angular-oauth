@@ -10,12 +10,21 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
     <changeSet author="Aziz" id="1">
-        <sql>
-            INSERT INTO t_products_categories(category_name) VALUES ('Books');
-            INSERT INTO t_products_categories(category_name) VALUES ('Coffee Mugs');
-            INSERT INTO t_products_categories(category_name) VALUES ('Mouse Pads');
-            INSERT INTO t_products_categories(category_name) VALUES ('Luggage Tags');
-        </sql>
+        <preConditions onFail="HALT">
+            <not>
+                <tableExists tableName="t_countries"/>
+            </not>
+        </preConditions>
+        <createTable tableName="t_countries">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
     </changeSet>
+
+
 
 </databaseChangeLog>
