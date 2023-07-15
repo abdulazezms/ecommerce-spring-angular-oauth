@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="1" author="Aziz" >
+        <preConditions onFail="HALT">
+            <not>
+                <tableExists tableName="t_order_items"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="t_order_items">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="image_url" type="varchar(255)"/>
+            <column name="quantity" type="int"/>
+            <column name="unit_price" type="decimal(19,2)"/>
+            <column name="t_orders_id" type="bigint"/>
+            <column name="t_products_id" type="bigint"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Aziz" id="2">
+        <addForeignKeyConstraint baseColumnNames="t_orders_id" baseTableName="t_order_items" constraintName="fk_t_orders_id"
+                                 referencedColumnNames="id" referencedTableName="t_orders"/>
+    </changeSet>
+
+    <changeSet author="Aziz" id="3">
+        <addForeignKeyConstraint baseColumnNames="t_products_id" baseTableName="t_order_items" constraintName="fk_t_products_id"
+                                 referencedColumnNames="id" referencedTableName="t_products"/>
+    </changeSet>
+
+    <changeSet author="Aziz" id="4">
+        <createIndex indexName="idx_t_orders_id" tableName="t_order_items">
+            <column name="t_orders_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

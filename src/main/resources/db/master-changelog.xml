@@ -13,4 +13,10 @@
     <include file="changelog/2-create-t_products.xml" relativeToChangelogFile="true"/>
     <include file="changelog/3-create-t_countries.xml" relativeToChangelogFile="true"/>
     <include file="changelog/4-create-t_cities.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/5-create-t_addresses.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/6-create-t_customers.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/7-create-t_orders.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/8-create-t_order_items.xml" relativeToChangelogFile="true"/>
+
+
 </databaseChangeLog>

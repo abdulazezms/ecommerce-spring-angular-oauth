@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="1" author="Aziz" >
+        <preConditions onFail="HALT">
+            <not>
+                <tableExists tableName="t_orders"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="t_orders">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="order_tracking_number" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+
+
+            <column name="total_price" type="decimal(19,2)"/>
+            <column name="total_quantity" type="int"/>
+
+            <column name="t_addresses_id_billing" type="bigint">
+                <constraints unique="true" uniqueConstraintName="UK_t_addresses_id_billing"/>
+            </column>
+            <column name="t_addresses_id_shipping" type="bigint">
+                <constraints unique="true" uniqueConstraintName="UK_t_addresses_id_shipping"/>
+            </column>
+
+
+            <column name="t_customers_id" type="bigint"/>
+
+            <column name="status" type="varchar(128)"/>
+            <column name="date_created" type="datetime(6)"/>
+            <column name="last_updated" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Aziz" id="2">
+        <addForeignKeyConstraint baseColumnNames="t_customers_id" baseTableName="t_orders" constraintName="fk_t_customers_id"
+                                 referencedColumnNames="id" referencedTableName="t_customers"/>
+    </changeSet>
+
+    <changeSet author="Aziz" id="3">
+        <addForeignKeyConstraint baseColumnNames="t_addresses_id_billing" baseTableName="t_orders"
+                                 constraintName="fk_t_addresses_id_billing" referencedColumnNames="id"
+                                 referencedTableName="t_addresses"/>
+    </changeSet>
+
+    <changeSet author="Aziz" id="4">
+        <addForeignKeyConstraint baseColumnNames="t_addresses_id_shipping" baseTableName="t_orders"
+                                 constraintName="fk_t_addresses_id_shipping" referencedColumnNames="id"
+                                 referencedTableName="t_addresses"/>
+    </changeSet>
+
+    <changeSet author="Aziz" id="5">
+        <createIndex indexName="idx_t_customers_id" tableName="t_orders">
+            <column name="t_customers_id"/>
+        </createIndex>
+    </changeSet>
+
+
+</databaseChangeLog>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="1" author="Aziz" >
+        <preConditions onFail="HALT">
+            <not>
+                <tableExists tableName="t_addresses"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="t_addresses">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="t_cities_id" type="bigint" />
+            <column name="t_countries_id" type="bigint" />
+            <column name="street" type="varchar(255)"/>
+            <column name="zip_code" type="varchar(4)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Aziz">
+        <addForeignKeyConstraint baseTableName="t_addresses"
+                              baseColumnNames="t_cities_id"
+                              referencedTableName="t_cities"
+                              referencedColumnNames="id"
+                              constraintName="fk_t_cities_id"/>
+    </changeSet>
+
+    <changeSet id="3" author="Aziz">
+        <addForeignKeyConstraint baseTableName="t_addresses"
+                                 baseColumnNames="t_countries_id"
+                                 referencedTableName="t_countries"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_t_countries_id"/>
+    </changeSet>
+
+</databaseChangeLog>
