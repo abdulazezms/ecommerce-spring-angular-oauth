@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 import { City } from 'src/app/common/city';
 import { Country } from 'src/app/common/country';
 import { FormService } from 'src/app/services/form.service';
+import { BusinessValidators } from 'src/app/validators/business-validators';
 
 @Component({
   selector: 'app-checkout',
@@ -47,47 +53,160 @@ export class CheckoutComponent implements OnInit {
 
     //populate countries
     this.formService.getCountries().subscribe((data: Country[]) => {
-      console.log('Retrieved: ' + JSON.stringify(data));
       this.countries = data;
     });
 
     //Constructs a new `FormGroup` instance.
     this.checkoutFormGroup = this.fromBuilder.group({
-      //Constructs a new `FormGroup` instance.
+      //Constructs a new `FormGroup` instance for customer details.
       customer: this.fromBuilder.group({
-        firstName: [''],
-        lastName: [''],
-        email: [''],
+        firstName: new FormControl('', [
+          Validators.required,
+          Validators.minLength(2),
+          BusinessValidators.notEmpty,
+        ]),
+        lastName: new FormControl('', [
+          Validators.required,
+          Validators.minLength(2),
+          BusinessValidators.notEmpty,
+        ]),
+        email: new FormControl('', [
+          Validators.required,
+          Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
+        ]),
       }),
 
-      //Constructs a new `FormGroup` instance.
+      //Constructs a new `FormGroup` instance for billing details.
       shippingAddress: this.fromBuilder.group({
-        country: [''],
-        street: [''],
-        city: [''],
-        state: [''],
-        zipCode: [''],
+        country: new FormControl('', [Validators.required]),
+        street: new FormControl('', [
+          Validators.required,
+          Validators.minLength(2),
+          BusinessValidators.notEmpty,
+        ]),
+        city: new FormControl('', [Validators.required]),
+        state: new FormControl('', [Validators.required]),
+        zipCode: new FormControl('', [
+          Validators.required,
+          Validators.minLength(2),
+          BusinessValidators.notEmpty,
+        ]),
       }),
 
-      //Constructs a new `FormGroup` instance.
+      //Constructs a new `FormGroup` instance for shipping details.
       billingAddress: this.fromBuilder.group({
-        country: [''],
-        street: [''],
-        city: [''],
-        state: [''],
-        zipCode: [''],
+        country: new FormControl('', [Validators.required]),
+        street: new FormControl('', [
+          Validators.minLength(2),
+          BusinessValidators.notEmpty,
+          Validators.required,
+        ]),
+        city: new FormControl('', [Validators.required]),
+        state: new FormControl('', [Validators.required]),
+        zipCode: new FormControl('', [
+          Validators.minLength(2),
+          BusinessValidators.notEmpty,
+          Validators.required,
+        ]),
       }),
 
-      //Constructs a new `FormGroup` instance.
+      //Constructs a new `FormGroup` instance for payment details.
       creditCard: this.fromBuilder.group({
-        cardType: [''],
-        nameOnCard: [''],
-        cardNumber: [''],
-        securityCode: [''],
-        expirationMonth: [''],
-        expirationYear: [''],
+        cardType: new FormControl('', [Validators.required]),
+        nameOnCard: new FormControl('', [
+          Validators.required,
+          BusinessValidators.notEmpty,
+          Validators.minLength(2),
+        ]),
+        cardNumber: new FormControl('', [
+          Validators.required,
+          Validators.pattern('^[0-9]{16}$'),
+        ]),
+        securityCode: new FormControl('', [
+          Validators.required,
+          Validators.pattern('^[0-9]{3}$'),
+        ]),
+        expirationMonth: new FormControl('', []),
+        expirationYear: new FormControl('', []),
       }),
     });
+  }
+
+  //customer fields
+  get firstName() {
+    return this.getControl('customer', 'firstName');
+  }
+
+  get lastName() {
+    return this.getControl('customer', 'lastName');
+  }
+
+  get email() {
+    return this.getControl('customer', 'email');
+  }
+
+  //shipping address fields
+  get shippingAddressStreet() {
+    return this.getControl('shippingAddress', 'street');
+  }
+
+  get shippingAddressCountry() {
+    return this.getControl('shippingAddress', 'country');
+  }
+
+  get shippingAddressCity() {
+    return this.getControl('shippingAddress', 'city');
+  }
+
+  get shippingAddressState() {
+    return this.getControl('shippingAddress', 'state');
+  }
+
+  get shippingAddressZipCode() {
+    return this.getControl('shippingAddress', 'zipCode');
+  }
+
+  //billing address fields
+  get billingAddressStreet() {
+    return this.getControl('billingAddress', 'street');
+  }
+
+  get billingAddressCountry() {
+    return this.getControl('billingAddress', 'country');
+  }
+
+  get billingAddressCity() {
+    return this.getControl('billingAddress', 'city');
+  }
+
+  get billingAddressState() {
+    return this.getControl('billingAddress', 'state');
+  }
+
+  get billingAddressZipCode() {
+    return this.getControl('billingAddress', 'zipCode');
+  }
+
+  //payment fields
+
+  get cardType() {
+    return this.getControl('creditCard', 'cardType');
+  }
+
+  get nameOnCard() {
+    return this.getControl('creditCard', 'nameOnCard');
+  }
+
+  get cardNumber() {
+    return this.getControl('creditCard', 'cardNumber');
+  }
+
+  get securityCode() {
+    return this.getControl('creditCard', 'securityCode');
+  }
+
+  getControl(formGroupName: string, formControlName: string) {
+    return this.checkoutFormGroup.get(`${formGroupName}.${formControlName}`);
   }
 
   onSubmit() {
@@ -96,6 +215,13 @@ export class CheckoutComponent implements OnInit {
     console.log(this.checkoutFormGroup?.get('shippingAddress')?.value);
     console.log(this.checkoutFormGroup?.get('billingAddress')?.value);
     console.log(this.checkoutFormGroup?.get('creditCard')?.value);
+    if (this.checkoutFormGroup.invalid) {
+      //touching all fields to trigger all error messages.
+      console.log('indvalid!');
+      this.checkoutFormGroup.markAllAsTouched();
+    } else {
+      //TODO:
+    }
   }
 
   copyShippingAddressToBillingAddress(event: any) {
@@ -108,6 +234,7 @@ export class CheckoutComponent implements OnInit {
     } else {
       this.billingSameAsShipping = false;
       this.checkoutFormGroup.controls['billingAddress'].reset();
+      // this.checkoutFormGroup.controls['billingAddress'].markAllAsTouched();
       this.billingCities = [];
     }
   }
