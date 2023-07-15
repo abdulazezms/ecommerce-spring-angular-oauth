@@ -91,7 +91,6 @@ export class CheckoutComponent implements OnInit {
           BusinessValidators.notEmpty,
         ]),
         city: new FormControl('', [Validators.required]),
-        state: new FormControl('', [Validators.required]),
         zipCode: new FormControl('', [
           Validators.required,
           Validators.minLength(2),
@@ -108,7 +107,6 @@ export class CheckoutComponent implements OnInit {
           Validators.required,
         ]),
         city: new FormControl('', [Validators.required]),
-        state: new FormControl('', [Validators.required]),
         zipCode: new FormControl('', [
           Validators.minLength(2),
           BusinessValidators.notEmpty,
@@ -164,9 +162,6 @@ export class CheckoutComponent implements OnInit {
     return this.getControl('shippingAddress', 'city');
   }
 
-  get shippingAddressState() {
-    return this.getControl('shippingAddress', 'state');
-  }
 
   get shippingAddressZipCode() {
     return this.getControl('shippingAddress', 'zipCode');
@@ -185,9 +180,6 @@ export class CheckoutComponent implements OnInit {
     return this.getControl('billingAddress', 'city');
   }
 
-  get billingAddressState() {
-    return this.getControl('billingAddress', 'state');
-  }
 
   get billingAddressZipCode() {
     return this.getControl('billingAddress', 'zipCode');
@@ -264,7 +256,7 @@ export class CheckoutComponent implements OnInit {
       });
   }
 
-  getStates(formGroupName: string) {
+  getCities(formGroupName: string) {
     const formGroup = this.checkoutFormGroup.get(formGroupName);
     const countryName = formGroup?.value.country.name;
     this.formService.getCities(countryName).subscribe((data) => {
