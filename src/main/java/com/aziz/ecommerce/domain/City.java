@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@ToString
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

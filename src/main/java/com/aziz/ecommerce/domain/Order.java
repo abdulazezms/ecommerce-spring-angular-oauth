@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -34,11 +35,12 @@ public class Order {
     @Column(name = "total_quantity")
     private Long totalQuantity;
 
-    @OneToOne
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "t_addresses_id_billing")
     private Address billingAddress;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "t_addresses_id_shipping")
     private Address shippingAddress;
 
@@ -56,5 +58,13 @@ public class Order {
     @Column(name = "last_updated")
     @UpdateTimestamp
     private Date lastUpdated;
+
+    public void add(OrderItem orderItem){
+        if(this.orderItems == null){
+            this.orderItems = new HashSet<>();
+        }
+        orderItem.setOrder(this);
+        this.orderItems.add(orderItem);
+    }
 
 }
