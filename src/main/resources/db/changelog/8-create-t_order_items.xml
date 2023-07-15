@@ -21,9 +21,7 @@
                 <constraints nullable="false" primaryKey="true"/>
             </column>
 
-            <column name="image_url" type="varchar(255)"/>
             <column name="quantity" type="int"/>
-            <column name="unit_price" type="decimal(19,2)"/>
             <column name="t_orders_id" type="bigint"/>
             <column name="t_products_id" type="bigint"/>
         </createTable>

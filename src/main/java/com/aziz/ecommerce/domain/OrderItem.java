@@ -19,14 +19,8 @@ public class OrderItem {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @Column(name = "quantity")
     private Long quantity;
-
-    @Column(name = "unit_price")
-    private BigDecimal unitPrice;
 
     @ManyToOne
     @JoinColumn(name = "t_products_id")
