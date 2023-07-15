@@ -592,10 +592,16 @@
 
         <!--Order details-->
         <h3>Review Order</h3>
-        <p>Total Items: {{ totalQuantity }}</p>
-        <p>Total Price: {{ totalPrice | currency : "USD" }}</p>
-        <p>Shipping Fee: {{ shippingFee | currency : "USD" }}</p>
-        <p>Total: {{ shippingFee + totalPrice | currency : "USD" }}</p>
+        <p>Total Quantity: {{ totalQuantity }}</p>
+        <p class="mb-1 pb-0 pt-0 price">
+          Total Price: {{ totalPrice | currency : "USD" }}
+        </p>
+        <p class="mb-1 pb-0 pt-0 price">
+          Shipping Fee: {{ shippingFee | currency : "USD" }}
+        </p>
+        <p class="mb-1 pb-0 pt-0 price">
+          Total: {{ shippingFee + totalPrice | currency : "USD" }}
+        </p>
         <div class="text-center">
           <button type="submit" class="btn btn-info">Purchase</button>
         </div>

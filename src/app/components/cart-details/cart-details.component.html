@@ -71,11 +71,15 @@
             <td colspan="2"></td>
             <td>
               <p class="mb-1 pb-0 pt-0">Total Quantity: {{ totalQuantity }}</p>
+
+              <p class="mb-1 pb-0 pt-0 price">
+                Total Price: {{ totalPrice | currency : "USD" }}
+              </p>
               <p class="mb-1 pb-0 pt-0 price">
                 Shipping Fee: {{ shippingFee | currency : "USD" }}
               </p>
               <p class="mb-1 pb-0 pt-0 price">
-                Total Price: {{ totalPrice + shippingFee | currency : "USD" }}
+                Total: {{ shippingFee + totalPrice | currency : "USD" }}
               </p>
             </td>
           </tr>

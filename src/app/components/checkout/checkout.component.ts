@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { City } from 'src/app/common/city';
 import { Country } from 'src/app/common/country';
+import { CartService } from 'src/app/services/cart.service';
 import { FormService } from 'src/app/services/form.service';
 import { BusinessValidators } from 'src/app/validators/business-validators';
 
@@ -33,10 +34,15 @@ export class CheckoutComponent implements OnInit {
 
   constructor(
     private fromBuilder: FormBuilder,
-    private formService: FormService
-  ) {}
+    private formService: FormService,
+    private cartService: CartService
+  ) {
+    this.shippingFee = cartService.shippingFee;
+  }
 
   ngOnInit(): void {
+    this.reviewOrder();
+
     const startMonth = new Date().getMonth() + 1;
 
     //populate years
@@ -268,6 +274,16 @@ export class CheckoutComponent implements OnInit {
         this.billingCities = data;
       }
       formGroup?.get('city')?.setValue(data[0]);
+    });
+  }
+
+  reviewOrder() {
+    this.cartService.totalPrice.subscribe((value: number) => {
+      this.totalPrice = value;
+    });
+
+    this.cartService.totalQuantity.subscribe((value: number) => {
+      this.totalQuantity = value;
     });
   }
 }
