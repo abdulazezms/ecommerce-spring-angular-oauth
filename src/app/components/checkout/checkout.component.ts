@@ -5,9 +5,17 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Address } from 'src/app/common/address';
+import { CartItem } from 'src/app/common/cart-item';
 import { City } from 'src/app/common/city';
 import { Country } from 'src/app/common/country';
+import { Customer } from 'src/app/common/customer';
+import { Order } from 'src/app/common/order';
+import { OrderItem } from 'src/app/common/order-item';
+import { Purchase } from 'src/app/common/purchase';
 import { CartService } from 'src/app/services/cart.service';
+import { CheckoutService } from 'src/app/services/checkout.service';
 import { FormService } from 'src/app/services/form.service';
 import { BusinessValidators } from 'src/app/validators/business-validators';
 
@@ -35,7 +43,9 @@ export class CheckoutComponent implements OnInit {
   constructor(
     private fromBuilder: FormBuilder,
     private formService: FormService,
-    private cartService: CartService
+    private cartService: CartService,
+    private checkoutService: CheckoutService,
+    private router: Router
   ) {
     this.shippingFee = cartService.shippingFee;
   }
@@ -162,7 +172,6 @@ export class CheckoutComponent implements OnInit {
     return this.getControl('shippingAddress', 'city');
   }
 
-
   get shippingAddressZipCode() {
     return this.getControl('shippingAddress', 'zipCode');
   }
@@ -179,7 +188,6 @@ export class CheckoutComponent implements OnInit {
   get billingAddressCity() {
     return this.getControl('billingAddress', 'city');
   }
-
 
   get billingAddressZipCode() {
     return this.getControl('billingAddress', 'zipCode');
@@ -208,27 +216,68 @@ export class CheckoutComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('handling submission');
-    console.log(this.checkoutFormGroup?.get('customer')?.value);
-    console.log(this.checkoutFormGroup?.get('shippingAddress')?.value);
-    console.log(this.checkoutFormGroup?.get('billingAddress')?.value);
-    console.log(this.checkoutFormGroup?.get('creditCard')?.value);
+    if (this.billingSameAsShipping) {
+      this.copyShippingToBillingOperation();
+    }
+
     if (this.checkoutFormGroup.invalid) {
       //touching all fields to trigger all error messages.
-      console.log('indvalid!');
       this.checkoutFormGroup.markAllAsTouched();
-    } else {
-      //TODO:
+      return;
     }
+
+    //populate order and order items.
+    const order: Order = new Order(this.totalPrice, this.totalQuantity);
+    const cartItems: CartItem[] = this.cartService.cartItems;
+    const orderItems: OrderItem[] = cartItems.map(
+      (cartItem) => new OrderItem(cartItem)
+    );
+
+    //populate customer.
+    const customer: Customer = new Customer();
+    customer.firstName = this.firstName?.value;
+    customer.lastName = this.lastName?.value;
+    customer.email = this.email?.value;
+
+    //populate addresses.
+    const billingAddress: Address = new Address();
+    billingAddress.city = this.billingAddressCity?.value;
+    billingAddress.country = this.billingAddressCountry?.value;
+    billingAddress.zipCode = this.billingAddressZipCode?.value;
+    billingAddress.street = this.billingAddressStreet?.value;
+
+    const shippingAddress: Address = new Address();
+    shippingAddress.city = this.shippingAddressCity?.value;
+    shippingAddress.country = this.shippingAddressCountry?.value;
+    shippingAddress.zipCode = this.shippingAddressZipCode?.value;
+    shippingAddress.street = this.shippingAddressStreet?.value;
+
+    //populate purchase.
+    const purchase: Purchase = new Purchase();
+    purchase.orderItems = orderItems;
+    purchase.order = order;
+    purchase.billingAddress = billingAddress;
+    purchase.shippingAddress = shippingAddress;
+    purchase.customer = customer;
+
+    //place the order.
+    this.checkoutService.placeOrder(purchase).subscribe({
+      next: (response) => {
+        alert(
+          `Your order has been received.\nOrder tracking number: ${response.orderTrackingNumber}`
+        );
+        this.resetCart();
+      },
+      error: (response) => {
+        alert(`There was an error: ${response.message}`);
+      },
+    });
   }
 
   copyShippingAddressToBillingAddress(event: any) {
     if (event.target.checked) {
       this.billingSameAsShipping = true;
-      this.checkoutFormGroup.controls['billingAddress'].setValue(
-        this.checkoutFormGroup.controls['shippingAddress'].value
-      );
-      this.billingCities = this.shippingCities;
+      this.copyShippingToBillingOperation();
     } else {
       this.billingSameAsShipping = false;
       this.checkoutFormGroup.controls['billingAddress'].reset();
@@ -237,15 +286,21 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
+  copyShippingToBillingOperation() {
+    this.checkoutFormGroup.controls['billingAddress'].setValue(
+      this.checkoutFormGroup.controls['shippingAddress'].value
+    );
+    this.billingCities = this.shippingCities;
+  }
+
   handleYearChange() {
     const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
     const currentYear = new Date().getFullYear();
     const selectedYear = +creditCardFormGroup?.get('expirationYear')?.value;
     let startMonth = 1;
-    console.log('select year is ' + selectedYear);
+
     if (selectedYear === currentYear) {
       startMonth = new Date().getMonth() + 1;
-      console.log('yes years are equal!');
     } else {
       startMonth = 1;
     }
@@ -277,5 +332,17 @@ export class CheckoutComponent implements OnInit {
     this.cartService.totalQuantity.subscribe((value: number) => {
       this.totalQuantity = value;
     });
+  }
+
+  resetCart() {
+    this.billingSameAsShipping = false;
+    this.cartService.cartItems = [];
+
+    //reset total price and quantity to 0, so all subscribers get to know.
+    this.cartService.totalPrice.next(0);
+    this.cartService.totalQuantity.next(0);
+
+    this.shippingCities = [];
+    this.billingCities = [];
   }
 }
