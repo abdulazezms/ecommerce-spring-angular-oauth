@@ -344,5 +344,6 @@ export class CheckoutComponent implements OnInit {
 
     this.shippingCities = [];
     this.billingCities = [];
+    this.checkoutFormGroup.reset();
   }
 }
