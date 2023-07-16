@@ -1,0 +1,45 @@
+<!-- MAIN CONTENT-->
+<div class="main-content">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <div class="row">
+        <div>
+          <div *ngIf="currentProduct == null">
+            <div class="alert alert-warning col-md-12" role="alert">
+              Oops! We couldn't find the resource you're looking for.
+              Double-check the URL or explore other pages on our website.
+            </div>
+          </div>
+
+          <img
+            src="{{ currentProduct?.imageUrl }}"
+            class="img-responsive detail-img"
+          />
+
+          <h3>{{ currentProduct?.name }}</h3>
+          <hr />
+          <h4 *ngIf="currentProduct">Product Description</h4>
+          <p>
+            {{ currentProduct?.description }}
+          </p>
+          <div class="price">
+            {{ currentProduct?.unitPrice | currency : "USD" }}
+          </div>
+          <p *ngIf="currentProduct">
+            <button class="btn btn-primary btn-sm" (click)="addToCart()">
+              Add to cart
+            </button>
+          </p>
+
+          <a routerLink="/products" class="mt-5">
+            <button class="btn btn-lg text-center">
+              <span><i class="fa fa-arrow-left fa-3x"></i></span>
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- END PAGE CONTAINER-->
