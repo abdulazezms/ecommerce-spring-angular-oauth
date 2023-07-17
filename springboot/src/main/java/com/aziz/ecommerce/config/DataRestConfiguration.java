@@ -14,6 +14,8 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +41,8 @@ public class DataRestConfiguration implements RepositoryRestConfigurer {
         disableHttpMethods(unsupportedHttpMethods, config, Country.class);
         disableHttpMethods(unsupportedHttpMethods, config, City.class);
         exposeIds(config);
-        cors.addMapping(basePath + "/**").allowedOrigins(allowedOrigins);
+        System.out.println("adding mapping to " + basePath + "/** => " + Arrays.toString(allowedOrigins));
+        cors.addMapping("/**").allowedOrigins(allowedOrigins);
     }
 
     /**
