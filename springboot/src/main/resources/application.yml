@@ -1,8 +1,5 @@
 spring:
-#  data:
-#    rest:
-#      base-path: /api
-#
+
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/full-stack-ecommerce?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: ${DB_USERNAME:ecommerceapp}
@@ -27,14 +24,11 @@ spring:
 server:
   port: ${SERVER_PORT:8080}
   servlet:
-    context-path: ${CONTEXT_PATH:/api/v1}
+    context-path: ${APP_CONTEXT_PATH:/api/v1}
 
 env:
-  variable:
-
-
-
-
+  allowed:
+    origins: ${ALLOWED_ORIGINS:http://localhost:4200}
 #management:
 #  endpoints:
 #    web:
