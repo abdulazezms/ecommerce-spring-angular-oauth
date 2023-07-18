@@ -15,7 +15,6 @@ public class SecurityConfiguration {
     private final String [] whiteList = {"/products/**", "/product-category/**"};
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        // protect endpoint /api/orders
         http.authorizeHttpRequests(configurer ->
                         configurer
                                 .requestMatchers(whiteList)
