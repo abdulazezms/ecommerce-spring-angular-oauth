@@ -12,7 +12,6 @@ import OktaSignIn from '@okta/okta-signin-widget';
 export class LoginComponent implements OnInit {
   oktaSignIn: any;
   constructor(@Inject(OKTA_AUTH) private oktaAuth: OktaAuth) {
-    console.log("Yes, i've been called!");
     this.oktaSignIn = new OktaSignIn({
       logo: '/assets/images/logo.jpg',
       baseUrl: myAppConfig.oidc.issuer.split('/oauth2')[0],

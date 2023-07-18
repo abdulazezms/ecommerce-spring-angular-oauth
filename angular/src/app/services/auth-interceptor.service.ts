@@ -37,12 +37,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     ];
     //check if any of secure endpoints is in the current requested url.
     if (secureBackendEndpoints.some((url) => req.urlWithParams.includes(url))) {
-      console.log(
-        'receiving teh access token: ' + this.oktaAuth.getAccessToken()
-      );
       const accessToken: string = this.oktaAuth.getAccessToken()!;
-      const idToken: string = this.oktaAuth.getIdToken()!;
-      console.log('id token is ' + idToken);
       //clone the request and add the access token. Since the request is immutable, we copy it and make changes on the copy.
       req = req.clone({
         setHeaders: {

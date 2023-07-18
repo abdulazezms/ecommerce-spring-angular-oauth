@@ -13,7 +13,7 @@ export class OrderHistoryService {
   private ordersUrl = `${this.baseUrl}/orders`;
   constructor(private httpClient: HttpClient) {}
 
-  getOrderHistory(email: string): Observable<OrderHistory[]> {
+  getOrderHistory(): Observable<OrderHistory[]> {
     return this.httpClient.get<OrderHistory[]>(`${this.ordersUrl}`).pipe(
       map((response: any) => {
         return response;
