@@ -10,10 +10,7 @@ spring:
       detection-strategy: annotated
 
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-
+   
     show-sql: true
     hibernate:
       ddl-auto: none
