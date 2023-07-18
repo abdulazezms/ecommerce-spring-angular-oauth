@@ -32,7 +32,7 @@ public class CheckoutServiceImpl implements CheckoutService{
     @Transactional
     public PurchaseResponseDto placeOrder(PurchaseRequestDto purchaseRequestDto) {
         Jwt authenticationPrincipal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = authenticationPrincipal.getSubject();
+        String email = authenticationPrincipal.getClaimAsString("email");
 
         //storing the user in case we have a new user.
         Customer customer = customerDao.findByEmail(email).orElseGet(() -> customerDao.save(Customer.builder().email(email).build()));

@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { OKTA_AUTH } from '@okta/okta-angular';
-import { OktaAuth } from '@okta/okta-auth-js';
+import { KeycloakService } from 'keycloak-angular';
 import { OrderHistory } from 'src/app/common/order-history';
 import { OrderHistoryService } from 'src/app/services/order-history.service';
 
@@ -15,17 +14,16 @@ export class OrderHistoryComponent implements OnInit {
 
   constructor(
     private orderHistoryService: OrderHistoryService,
-    @Inject(OKTA_AUTH) private oktaAuth: OktaAuth
+    private keycloak: KeycloakService
   ) {}
 
   async ngOnInit() {
-    const userClaims = await this.oktaAuth.getUser();
-    this.email = userClaims.email as string;
+    await this.keycloak.isLoggedIn();
     this.setOrderHistory();
   }
 
   setOrderHistory() {
-    this.orderHistoryService.getOrderHistory(this.email).subscribe((value) => {
+    this.orderHistoryService.getOrderHistory().subscribe((value) => {
       this.orderHistory = value;
     });
   }

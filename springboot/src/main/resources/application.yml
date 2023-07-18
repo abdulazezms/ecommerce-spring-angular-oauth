@@ -20,15 +20,18 @@ spring:
 
   liquibase:
     change-log: classpath:/db/master-changelog.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH_ISSUER:http://localhost:8080/realms/ecommerce}
 
 server:
   port: ${SERVER_PORT:8090}
   servlet:
     context-path: ${APP_CONTEXT_PATH:/api/v1}
 
-okta:
-  oauth2:
-    issuer: ${OAUTH_ISSUER:https://dev-08064476.okta.com/oauth2/default}
+
 
 env:
   allowed:

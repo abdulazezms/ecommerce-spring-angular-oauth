@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { OKTA_AUTH, OktaAuthStateService } from '@okta/okta-angular';
-import { OktaAuth } from '@okta/okta-auth-js';
+import { Component, OnInit } from '@angular/core';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 
 @Component({
   selector: 'app-login-status',
@@ -8,33 +8,25 @@ import { OktaAuth } from '@okta/okta-auth-js';
   styleUrls: ['./login-status.component.css'],
 })
 export class LoginStatusComponent implements OnInit {
-  isAuthenticated: boolean = false;
-  userFullName: string = '';
+  public isAuthenticated = false;
+  public userProfile: KeycloakProfile | null = null;
 
-  constructor(
-    private oktaAuthService: OktaAuthStateService,
-    @Inject(OKTA_AUTH) private oktaAuth: OktaAuth
-  ) {}
+  constructor(private readonly keycloak: KeycloakService) {}
 
-  ngOnInit(): void {
-    //subscribe to authentication state changes.
-    this.oktaAuthService.authState$.subscribe((result) => {
-      this.isAuthenticated = result.isAuthenticated!;
-      this.getUserDetails();
-    });
-  }
-  getUserDetails() {
+  public async ngOnInit() {
+    this.isAuthenticated = await this.keycloak.isLoggedIn();
     if (this.isAuthenticated) {
-      //fetch claims.
-      this.oktaAuth.getUser().then((result) => {
-        this.userFullName = result.name as string;
-      });
+      this.userProfile = await this.keycloak.loadUserProfile();
     }
   }
 
-  logout() {
-    //termination session and remove tokens.
-    this.oktaAuth.signOut();
+  public login() {
+    this.keycloak.login();
+  }
+
+  public logout() {
+    console.log('calling logout!');
+    this.keycloak.logout('http://localhost:4200/products');
     sessionStorage.removeItem('cartItems');
   }
 }

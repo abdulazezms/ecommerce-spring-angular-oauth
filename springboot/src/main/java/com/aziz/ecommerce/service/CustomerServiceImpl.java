@@ -7,7 +7,10 @@ import com.aziz.ecommerce.dto.OrderHistoryDto;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CustomerServiceImpl implements CustomerService{
@@ -20,11 +23,14 @@ public class CustomerServiceImpl implements CustomerService{
     @Override
     public List<OrderHistoryDto> getOrders() {
         Jwt authenticationPrincipal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = authenticationPrincipal.getSubject();
-        Customer c = this.customerDao
-                .findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("No such customer exists"));
-        return c.getOrders().stream().map(this::orderToOrderHistoryDto).toList();
+        String email = authenticationPrincipal.getClaimAsString("email");
+        //create the user in case we have a new user.
+        Customer customer = customerDao.findByEmail(email).orElseGet(() -> customerDao.save(Customer.builder().email(email).build()));
+        Set<Order> customerOrders = customer.getOrders();
+        if(customerOrders == null || customerOrders.isEmpty()){
+            return new ArrayList<>();
+        }
+        return customer.getOrders().stream().map(this::orderToOrderHistoryDto).toList();
     }
 
     private OrderHistoryDto orderToOrderHistoryDto(Order order) {

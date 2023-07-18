@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ProductService } from './services/product.service';
 import { Routes, RouterModule, Router } from '@angular/router';
 import { ProductCategoryComponent } from './components/product-category/product-category.component';
@@ -14,33 +14,21 @@ import { CartStatusComponent } from './components/cart-status/cart-status.compon
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { LoginComponent } from './components/login/login.component';
 import { LoginStatusComponent } from './components/login-status/login-status.component';
-import {
-  OktaAuthModule,
-  OktaCallbackComponent,
-  OktaAuthGuard,
-} from '@okta/okta-angular';
-import { OktaAuth } from '@okta/okta-auth-js';
-import myAppConfig from './config/my-app-config';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
-import { AuthInterceptorService } from './services/auth-interceptor.service';
-
-const oktaConfig = myAppConfig.oidc;
-const oktaAuth = new OktaAuth(oktaConfig);
-
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { AuthGuard } from './keycloak/keycloak-auth-guard';
+import { environment } from 'src/environments/environment';
 const routes: Routes = [
-  { path: 'login/callback', component: OktaCallbackComponent },
-  { path: 'login', component: LoginComponent },
   {
     path: 'checkout',
     component: CheckoutComponent,
-    canActivate: [OktaAuthGuard], //ensuring this endpoint is accessible by authenticated users only.
+    canActivate: [AuthGuard], //ensuring this endpoint is accessible by authenticated users only.
   },
   {
     path: 'history',
     component: OrderHistoryComponent,
-    canActivate: [OktaAuthGuard], //ensuring this endpoint is accessible by authenticated users only.
+    canActivate: [AuthGuard], //ensuring this endpoint is accessible by authenticated users only.
   },
   { path: 'cart-details', component: CartDetailsComponent },
   { path: 'products/:id', component: ProductDetailsComponent },
@@ -52,12 +40,33 @@ const routes: Routes = [
   { path: '**', component: PageNotFoundComponent },
 ];
 
-function onAuthRequired(oktaAuth: any, injector: any) {
-  // Use injector to access any service available within your application
-  const router = injector.get(Router);
+function initializeKeycloak(keycloak: KeycloakService) {
+  return () =>
+    keycloak.init({
+      config: {
+        url: environment.keycloakUrl,
+        realm: environment.keycloakRealm,
+        clientId: environment.keycloakClientId,
+      },
 
-  // Redirect the user to your custom login page
-  router.navigate(['/login']);
+      initOptions: {
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/assets/silent-check-sso.html',
+      },
+
+      shouldAddToken: (request) => {
+        const { method, url } = request;
+
+        const isGetRequest = 'GET' === method.toUpperCase();
+        const acceptablePaths = ['/products', '/product-category']; //don't pass the authorization header when requesting such endpoints.
+        const isAcceptablePathMatch = acceptablePaths.some((path) =>
+          url.includes(path)
+        );
+
+        return !(isGetRequest && isAcceptablePathMatch);
+      },
+    });
 }
 
 @NgModule({
@@ -71,7 +80,6 @@ function onAuthRequired(oktaAuth: any, injector: any) {
     CartStatusComponent,
     CartDetailsComponent,
     CheckoutComponent,
-    LoginComponent,
     LoginStatusComponent,
     OrderHistoryComponent,
   ],
@@ -80,19 +88,16 @@ function onAuthRequired(oktaAuth: any, injector: any) {
     HttpClientModule,
     RouterModule.forRoot(routes),
     NgbModule,
+    KeycloakAngularModule,
     ReactiveFormsModule,
-    OktaAuthModule.forRoot({
-      oktaAuth,
-      onAuthRequired,
-    }),
   ],
   providers: [
     ProductService,
     {
-      //register the auth interceptor service as an HTTP interceptor.
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptorService,
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
       multi: true,
+      deps: [KeycloakService],
     },
   ],
   bootstrap: [AppComponent],

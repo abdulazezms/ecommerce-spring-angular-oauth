@@ -304,5 +304,7 @@ export class CheckoutComponent implements OnInit {
     this.billingCities = [];
     this.checkoutFormGroup.reset();
     this.billingSameAsShipping = false;
+    sessionStorage.removeItem('cartItems');
+    this.router.navigateByUrl('/history');
   }
 }

@@ -72,13 +72,13 @@
             <td>
               <p class="mb-1 pb-0 pt-0">Total Quantity: {{ totalQuantity }}</p>
 
-              <p class="mb-1 pb-0 pt-0 price">
+              <p class="mb-1 pb-0 pt-0 price" style="color: #0da8e4">
                 Total Price: {{ totalPrice | currency : "USD" }}
               </p>
-              <p class="mb-1 pb-0 pt-0 price">
+              <p class="mb-1 pb-0 pt-0 price" style="color: #0da8e4">
                 Shipping Fee: {{ shippingFee | currency : "USD" }}
               </p>
-              <p class="mb-1 pb-0 pt-0 price">
+              <p class="mb-1 pb-0 pt-0 price" style="color: #0da8e4">
                 Total: {{ shippingFee + totalPrice | currency : "USD" }}
               </p>
             </td>

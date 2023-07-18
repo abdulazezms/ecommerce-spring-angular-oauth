@@ -10,6 +10,6 @@ export class SearchComponent {
   constructor(private router: Router) {}
 
   searchProducts(searchValue: string) {
-    let outcome = this.router.navigateByUrl(`/search/${searchValue}`);
+    this.router.navigateByUrl(`/search/${searchValue}`);
   }
 }
