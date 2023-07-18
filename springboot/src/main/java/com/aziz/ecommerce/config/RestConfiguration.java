@@ -12,7 +12,6 @@ public class RestConfiguration implements WebMvcConfigurer {
 
     /**
      * Allow all requests from origins defined in the `allowedOrigins` env variable.
-     * The path pattern passed to the addMapping(pathPattern) is relative to the context path.
      * @param registry
      */
     @Override
