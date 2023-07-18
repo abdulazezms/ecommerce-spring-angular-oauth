@@ -22,7 +22,7 @@ spring:
     change-log: classpath:/db/master-changelog.xml
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:8090}
   servlet:
     context-path: ${APP_CONTEXT_PATH:/api/v1}
 
