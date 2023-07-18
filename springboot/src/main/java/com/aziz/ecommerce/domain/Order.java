@@ -4,11 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "t_orders")
@@ -24,7 +21,7 @@ public class Order {
     private Long id;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<OrderItem> orderItems;
+    private List<OrderItem> orderItems;
 
     @Column(name = "order_tracking_number")
     private String orderTrackingNumber;
@@ -61,10 +58,9 @@ public class Order {
 
     public void add(OrderItem orderItem){
         if(this.orderItems == null){
-            this.orderItems = new HashSet<>();
+            this.orderItems = new ArrayList<>();
         }
         orderItem.setOrder(this);
         this.orderItems.add(orderItem);
     }
-
 }

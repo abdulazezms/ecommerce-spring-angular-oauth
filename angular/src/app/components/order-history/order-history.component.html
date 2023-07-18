@@ -1,0 +1,49 @@
+<!-- MAIN CONTENT-->
+<div class="main-content">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <div *ngIf="orderHistory.length > 0; else elseBlock">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width: 20%">Order Tracking Number</th>
+              <th style="width: 20%">Total Price</th>
+              <th style="width: 20%">Total Quantity</th>
+              <th style="width: 20%">Date</th>
+              <th style="width: 20%">Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let temp of orderHistory">
+              <td style="width: 20%">{{ temp.orderTrackingNumber }}</td>
+              <td style="width: 10%">
+                {{ temp.totalPrice | currency : "USD" }}
+              </td>
+              <td style="width: 10%">{{ temp.totalQuantity }}</td>
+              <td style="width: 10%">
+                {{ temp.dateCreated | date : "medium" }}
+              </td>
+              <td style="width: 10%">
+                {{ temp.status }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!--ng template code block-->
+      <ng-template #elseBlock>
+        <span class="alert alert-warning" style="display: block" role="alert"
+          >You have not made any orders yet.</span
+        >
+      </ng-template>
+
+      <a routerLink="/products" class="mt-5">
+        <button class="btn btn-lg text-center">
+          <span><i class="fa fa-arrow-left fa-3x"></i></span>
+        </button>
+      </a>
+    </div>
+  </div>
+</div>

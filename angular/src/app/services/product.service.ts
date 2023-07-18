@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Product } from '../common/product';
 import { ProductCategory } from '../common/product-category';
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  private baseUrl = 'http://localhost:8080/api/v1';
+  private baseUrl = environment.backendBaseUrl;
   private productsUrl: string = `${this.baseUrl}/products`;
   private categoryUrl: string = `${this.baseUrl}/product-category`;
+
   constructor(private httpClient: HttpClient) {}
 
   searchProducts(

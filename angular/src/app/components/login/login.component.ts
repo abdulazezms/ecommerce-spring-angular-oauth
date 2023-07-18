@@ -27,16 +27,17 @@ export class LoginComponent implements OnInit {
   }
   ngOnInit(): void {
     this.oktaSignIn.remove();
-    console.log('ng on in it is in the house baby');
     this.oktaSignIn
       .showSignInToGetTokens({
         el: '#okta-signin-widget',
       })
       .then((tokens: Tokens) => {
+        //user logged in successfully.
+
         // Remove the widget
         this.oktaSignIn.remove();
 
-        // In this flow the redirect to Okta occurs in a hidden iframe
+        // // In this flow the redirect to Okta occurs in a hidden iframe
         this.oktaAuth.handleLoginRedirect(tokens);
       })
       .catch((err: any) => {

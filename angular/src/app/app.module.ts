@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ProductService } from './services/product.service';
 import { Routes, RouterModule, Router } from '@angular/router';
 import { ProductCategoryComponent } from './components/product-category/product-category.component';
@@ -19,15 +19,15 @@ import { LoginStatusComponent } from './components/login-status/login-status.com
 import {
   OktaAuthModule,
   OktaCallbackComponent,
-  OktaConfig,
   OktaAuthGuard,
 } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
 import myAppConfig from './config/my-app-config';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
+import { AuthInterceptorService } from './services/auth-interceptor.service';
 
 const oktaConfig = myAppConfig.oidc;
 const oktaAuth = new OktaAuth(oktaConfig);
-const moduleConfig: OktaConfig = { oktaAuth };
 
 const routes: Routes = [
   { path: 'login/callback', component: OktaCallbackComponent },
@@ -35,6 +35,11 @@ const routes: Routes = [
   {
     path: 'checkout',
     component: CheckoutComponent,
+    canActivate: [OktaAuthGuard], //ensuring this endpoint is accessible by authenticated users only.
+  },
+  {
+    path: 'history',
+    component: OrderHistoryComponent,
     canActivate: [OktaAuthGuard], //ensuring this endpoint is accessible by authenticated users only.
   },
   { path: 'cart-details', component: CartDetailsComponent },
@@ -68,6 +73,7 @@ function onAuthRequired(oktaAuth: any, injector: any) {
     CheckoutComponent,
     LoginComponent,
     LoginStatusComponent,
+    OrderHistoryComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,7 +86,15 @@ function onAuthRequired(oktaAuth: any, injector: any) {
       onAuthRequired,
     }),
   ],
-  providers: [ProductService],
+  providers: [
+    ProductService,
+    {
+      //register the auth interceptor service as an HTTP interceptor.
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -2,9 +2,7 @@ package com.aziz.ecommerce.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,17 +19,13 @@ public class Customer {
     @Column(name = "id")
     private Long id;
 
+
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private Set<Order> orders;
 
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
 
     public void add(Order order){
         if(this.orders == null){

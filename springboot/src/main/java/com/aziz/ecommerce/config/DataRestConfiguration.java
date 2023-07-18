@@ -1,9 +1,6 @@
 package com.aziz.ecommerce.config;
 
-import com.aziz.ecommerce.domain.City;
-import com.aziz.ecommerce.domain.Country;
-import com.aziz.ecommerce.domain.Product;
-import com.aziz.ecommerce.domain.ProductCategory;
+import com.aziz.ecommerce.domain.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.Type;
@@ -14,8 +11,6 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -24,9 +19,6 @@ public class DataRestConfiguration implements RepositoryRestConfigurer {
     @Value("${env.allowed.origins}")
     private String [] allowedOrigins;
     private EntityManager entityManager;
-
-    @Value("${server.servlet.context-path}")
-    private String basePath;
 
     @Autowired
     public DataRestConfiguration(EntityManager entityManager){
@@ -41,7 +33,6 @@ public class DataRestConfiguration implements RepositoryRestConfigurer {
         disableHttpMethods(unsupportedHttpMethods, config, Country.class);
         disableHttpMethods(unsupportedHttpMethods, config, City.class);
         exposeIds(config);
-        System.out.println("adding mapping to " + basePath + "/** => " + Arrays.toString(allowedOrigins));
         cors.addMapping("/**").allowedOrigins(allowedOrigins);
     }
 

@@ -4,12 +4,13 @@ import { Observable, map } from 'rxjs';
 import { of } from 'rxjs';
 import { Country } from '../common/country';
 import { City } from '../common/city';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormService {
-  private baseUrl = 'http://localhost:8080/api/v1';
+  private baseUrl = environment.backendBaseUrl;
   private countriesUrl: string = `${this.baseUrl}/countries`;
   private citiesUrl: string = `${this.baseUrl}/cities`;
   private pageSize: number = 10_0000;

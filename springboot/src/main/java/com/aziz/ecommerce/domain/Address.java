@@ -1,8 +1,6 @@
 package com.aziz.ecommerce.domain;
-
 import jakarta.persistence.*;
 import lombok.*;
-
 @Entity
 @Table(name = "t_addresses")
 @AllArgsConstructor

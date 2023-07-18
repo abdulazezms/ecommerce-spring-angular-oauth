@@ -2,17 +2,14 @@ package com.aziz.ecommerce.dto;
 
 
 import com.aziz.ecommerce.domain.Address;
-import com.aziz.ecommerce.domain.Customer;
 import com.aziz.ecommerce.domain.Order;
 import com.aziz.ecommerce.domain.OrderItem;
 import lombok.Data;
-
 import java.util.Set;
 
 @Data
 
 public class PurchaseRequestDto {
-    private Customer customer;
     private Address shippingAddress;
     private Address billingAddress;
     private Order order;

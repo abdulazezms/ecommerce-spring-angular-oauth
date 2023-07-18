@@ -35,5 +35,6 @@ export class LoginStatusComponent implements OnInit {
   logout() {
     //termination session and remove tokens.
     this.oktaAuth.signOut();
+    sessionStorage.removeItem('cartItems');
   }
 }

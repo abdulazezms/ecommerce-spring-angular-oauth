@@ -10,7 +10,6 @@ import { Address } from 'src/app/common/address';
 import { CartItem } from 'src/app/common/cart-item';
 import { City } from 'src/app/common/city';
 import { Country } from 'src/app/common/country';
-import { Customer } from 'src/app/common/customer';
 import { Order } from 'src/app/common/order';
 import { OrderItem } from 'src/app/common/order-item';
 import { Purchase } from 'src/app/common/purchase';
@@ -74,24 +73,6 @@ export class CheckoutComponent implements OnInit {
 
     //Constructs a new `FormGroup` instance.
     this.checkoutFormGroup = this.fromBuilder.group({
-      //Constructs a new `FormGroup` instance for customer details.
-      customer: this.fromBuilder.group({
-        firstName: new FormControl('', [
-          Validators.required,
-          Validators.minLength(2),
-          BusinessValidators.notEmpty,
-        ]),
-        lastName: new FormControl('', [
-          Validators.required,
-          Validators.minLength(2),
-          BusinessValidators.notEmpty,
-        ]),
-        email: new FormControl('', [
-          Validators.required,
-          Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
-        ]),
-      }),
-
       //Constructs a new `FormGroup` instance for billing details.
       shippingAddress: this.fromBuilder.group({
         country: new FormControl('', [Validators.required]),
@@ -144,19 +125,6 @@ export class CheckoutComponent implements OnInit {
         expirationYear: new FormControl('', []),
       }),
     });
-  }
-
-  //customer fields
-  get firstName() {
-    return this.getControl('customer', 'firstName');
-  }
-
-  get lastName() {
-    return this.getControl('customer', 'lastName');
-  }
-
-  get email() {
-    return this.getControl('customer', 'email');
   }
 
   //shipping address fields
@@ -233,12 +201,6 @@ export class CheckoutComponent implements OnInit {
       (cartItem) => new OrderItem(cartItem)
     );
 
-    //populate customer.
-    const customer: Customer = new Customer();
-    customer.firstName = this.firstName?.value;
-    customer.lastName = this.lastName?.value;
-    customer.email = this.email?.value;
-
     //populate addresses.
     const billingAddress: Address = new Address();
     billingAddress.city = this.billingAddressCity?.value;
@@ -258,7 +220,6 @@ export class CheckoutComponent implements OnInit {
     purchase.order = order;
     purchase.billingAddress = billingAddress;
     purchase.shippingAddress = shippingAddress;
-    purchase.customer = customer;
 
     //place the order.
     this.checkoutService.placeOrder(purchase).subscribe({
@@ -281,7 +242,6 @@ export class CheckoutComponent implements OnInit {
     } else {
       this.billingSameAsShipping = false;
       this.checkoutFormGroup.controls['billingAddress'].reset();
-      // this.checkoutFormGroup.controls['billingAddress'].markAllAsTouched();
       this.billingCities = [];
     }
   }
@@ -335,15 +295,14 @@ export class CheckoutComponent implements OnInit {
   }
 
   resetCart() {
-    this.billingSameAsShipping = false;
     this.cartService.cartItems = [];
 
     //reset total price and quantity to 0, so all subscribers get to know.
     this.cartService.totalPrice.next(0);
     this.cartService.totalQuantity.next(0);
-
     this.shippingCities = [];
     this.billingCities = [];
     this.checkoutFormGroup.reset();
+    this.billingSameAsShipping = false;
   }
 }

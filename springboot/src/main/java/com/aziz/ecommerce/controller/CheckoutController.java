@@ -18,10 +18,6 @@ public class CheckoutController {
 
     @PostMapping("/purchase")
     public ResponseEntity<PurchaseResponseDto> purchase(@RequestBody PurchaseRequestDto purchaseRequestDto){
-        System.out.println(purchaseRequestDto.getCustomer());
-        System.out.println(purchaseRequestDto.getOrder());
-        System.out.println(purchaseRequestDto.getBillingAddress());
-        System.out.println(purchaseRequestDto.getShippingAddress());
         return new ResponseEntity<>(this.checkoutService.placeOrder(purchaseRequestDto), HttpStatus.CREATED);
     }
 }

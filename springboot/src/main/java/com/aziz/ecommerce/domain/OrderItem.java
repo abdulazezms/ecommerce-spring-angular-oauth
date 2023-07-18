@@ -1,9 +1,6 @@
 package com.aziz.ecommerce.domain;
-
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "t_order_items")

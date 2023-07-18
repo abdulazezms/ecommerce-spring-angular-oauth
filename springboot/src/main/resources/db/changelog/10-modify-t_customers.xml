@@ -12,5 +12,15 @@
     <changeSet id="1" author="Aziz" >
         <addUniqueConstraint tableName="t_customers" columnNames="email" constraintName="uq_email"/>
     </changeSet>
+    <!-- No need for first and last name. This can be easily retrieved through /userinfo aka token introspection-->
+    <changeSet id="2" author="Aziz">
+        <dropColumn tableName="t_customers" columnName="first_name" />
+    </changeSet>
+
+
+    <changeSet id="3" author="Aziz">
+
+        <dropColumn tableName="t_customers" columnName="last_name" />
+    </changeSet>
 
 </databaseChangeLog>

@@ -1,5 +1,4 @@
 package com.aziz.ecommerce.domain;
-
 import jakarta.persistence.*;
 import lombok.*;
 

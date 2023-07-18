@@ -4,9 +4,9 @@ spring:
     url: ${DB_URL:jdbc:mysql://localhost:3306/full-stack-ecommerce?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: ${DB_USERNAME:ecommerceapp}
     password: ${DB_PASSWORD:ecommerceapp}
-    driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     rest:
+      #Only DAOs annotated will be exposed.
       detection-strategy: annotated
 
   jpa:
@@ -29,6 +29,10 @@ server:
   servlet:
     context-path: ${APP_CONTEXT_PATH:/api/v1}
 
+okta:
+  oauth2:
+    issuer: ${OAUTH_ISSUER:https://dev-08064476.okta.com/oauth2/default}
+
 env:
   allowed:
     origins: ${ALLOWED_ORIGINS:http://localhost:4200}
@@ -49,5 +53,4 @@ logging:
     org:
       springframework:
         web: DEBUG
-
-#      enabled: true
+        security: DEBUG
