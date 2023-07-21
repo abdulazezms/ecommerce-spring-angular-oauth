@@ -32,7 +32,7 @@ okta:
 
 env:
   allowed:
-    origins: ${ALLOWED_ORIGINS:http://localhost:4200}
+    origins: ${ALLOWED_ORIGINS:http://localhost:4200,http://localhost}
 #management:
 #  endpoints:
 #    web:

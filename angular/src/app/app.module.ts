@@ -22,11 +22,11 @@ import {
   OktaAuthGuard,
 } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
-import myAppConfig from './config/my-app-config';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { environment } from 'src/environments/environment';
 
-const oktaConfig = myAppConfig.oidc;
+const oktaConfig = environment.oidc;
 const oktaAuth = new OktaAuth(oktaConfig);
 
 const routes: Routes = [
