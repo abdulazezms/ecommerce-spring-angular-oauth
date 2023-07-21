@@ -25,8 +25,7 @@ export class LoginStatusComponent implements OnInit {
   }
 
   public logout() {
-    console.log('calling logout!');
-    this.keycloak.logout('http://localhost:4200/products');
+    this.keycloak.logout(`${window.location.origin}/products`);
     sessionStorage.removeItem('cartItems');
   }
 }

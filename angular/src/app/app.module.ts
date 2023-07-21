@@ -41,6 +41,16 @@ const routes: Routes = [
 ];
 
 function initializeKeycloak(keycloak: KeycloakService) {
+  console.log('Initializing keycloak: ');
+  console.log('URL: ' + environment.keycloakUrl);
+  console.log('realm: ' + environment.keycloakRealm);
+  console.log('clientg id: ' + environment.keycloakClientId);
+  console.log('backend: ' + environment.backendBaseUrl);
+  console.log(
+    'redirectl url is ' +
+      window.location.origin +
+      '/assets/silent-check-sso.html'
+  );
   return () =>
     keycloak.init({
       config: {
@@ -50,6 +60,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       },
 
       initOptions: {
+        checkLoginIframe: false,
         onLoad: 'check-sso',
         silentCheckSsoRedirectUri:
           window.location.origin + '/assets/silent-check-sso.html',
