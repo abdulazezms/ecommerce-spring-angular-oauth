@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: full-stack-ecommerce
+    ports:
+      - "3316:3306"
+    volumes:
+      - ./db:/var/lib/mysql
+
+  backend:
+    image: springboot-app:1
+    build: ./springboot
+    restart: always
+    environment:
+      DB_URL: jdbc:mysql://db:3306/full-stack-ecommerce?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      OAUTH_ISSUER: https://dev-08064476.okta.com/oauth2/default
+      ALLOWED_ORIGINS: http://localhost
+    ports:
+      - "8090:8090"
+    depends_on:
+      - db
+  frontend:
+    image: angular-app:1
+    build: ./angular
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
