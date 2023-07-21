@@ -12,7 +12,15 @@ import org.springframework.web.accept.HeaderContentNegotiationStrategy;
 
 @Configuration
 public class SecurityConfiguration {
-    private final String [] whiteList = {"/products/**", "/product-category/**"};
+    private final String [] whiteList =
+            {
+                    "/products/**",
+                    "/product-category/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui.html"
+            };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(configurer ->
