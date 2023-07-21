@@ -295,8 +295,6 @@ export class CheckoutComponent implements OnInit {
   }
 
   resetCart() {
-    this.cartService.cartItems = [];
-
     //reset total price and quantity to 0, so all subscribers get to know.
     this.cartService.totalPrice.next(0);
     this.cartService.totalQuantity.next(0);
@@ -304,5 +302,8 @@ export class CheckoutComponent implements OnInit {
     this.billingCities = [];
     this.checkoutFormGroup.reset();
     this.billingSameAsShipping = false;
+    this.cartService.cartItems = [];
+    sessionStorage.removeItem('cartItems');
+    this.router.navigateByUrl('/history');
   }
 }
