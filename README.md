@@ -58,7 +58,7 @@ In the Angular codebase, the Okta account configuration can be found in the src/
 ```
 If you want to use your own Okta account, follow these steps:
 
-1. Open src/environments/environment.prod.ts  Update the clientId and issuer with your Okta account credentials. The values should correspond to your Okta application settings. Ensure to add necessary Origin URLs in your Okta account settings to securely redirect users to custom pages and enable cross-origin resource sharing.
+1. Open ``src/environments/environment.prod.ts``  and update the clientId and issuer with your Okta account credentials. The values should correspond to your Okta application settings. Ensure to add necessary Origin URLs in your Okta account settings to securely redirect users to custom pages and enable cross-origin resource sharing.
 2. In ``docker-compose.yml``, update the environment variable named `OAUTH_ISSUER` for the backend service.
 3. Run ```docker-compose build ```
 4. Run ```docker-compose up ```
