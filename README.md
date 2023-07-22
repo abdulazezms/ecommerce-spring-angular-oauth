@@ -8,6 +8,7 @@ This repository contains the code for a full-stack ecommerce website, built with
 - [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
 - [Class Diagram](#class-diagram)
+- [Okta Account Setup](#octa-account-setup)
 - [Contribution](#contribution)
 
 ## Features
@@ -42,6 +43,25 @@ The class diagram illustrates the key classes and their relationships.
 
 ![Class Diagram](class-diagram.png)
 
+## Octa account Setup
+In the Angular codebase, the Okta account configuration can be found in the src/environments/environment.prod.ts file. The current settings are:
+```export const environment = {
+  oidc: {
+    clientId: '0oaaeeost9XRbo0JD5d7',
+    issuer: 'https://dev-08064476.okta.com/oauth2/default',
+    redirectUri: `${window.location.origin}/login/callback`,
+    scopes: ['profile', 'email', 'openid'],
+  },
+  production: true,
+  backendBaseUrl: 'http://localhost:8090/api/v1',
+};
+```
+If you want to use your own Okta account, follow these steps:
+
+1. Open src/environments/environment.prod.ts  Update the clientId and issuer with your Okta account credentials. The values should correspond to your Okta application settings. Ensure to add necessary Origin URLs in your Okta account settings to securely redirect users to custom pages and enable cross-origin resource sharing.
+2. In ``docker-compose.yml`` Update the environment variable named `OAUTH_ISSUER` for the backend service.
+3. Run ```docker-compose build ```.
+4. Run ```docker-compose up ```.
 ## Contribution
 
 Please fork the repository if you want to contribute to this project, then submit a pull request with your improvements. Any suggestions and comments are appreciated!
