@@ -8,7 +8,7 @@ This repository contains the code for a full-stack ecommerce website, built with
 - [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
 - [Class Diagram](#class-diagram)
-- [Okta Account Setup](#octa-account-setup)
+- [Okta Account Setup](#okta-account-setup)
 - [Contribution](#contribution)
 
 ## Features
@@ -43,7 +43,7 @@ The class diagram illustrates the key classes and their relationships.
 
 ![Class Diagram](class-diagram.png)
 
-## Octa account Setup
+## Okta account Setup
 In the Angular codebase, the Okta account configuration can be found in the src/environments/environment.prod.ts file. The current settings are:
 ```export const environment = {
   oidc: {
