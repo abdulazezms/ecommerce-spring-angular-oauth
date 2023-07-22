@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
         // Remove the widget
         this.oktaSignIn.remove();
 
-        // // In this flow the redirect to Okta occurs in a hidden iframe
+        // In this flow the redirect to Okta occurs in a hidden iframe
         this.oktaAuth.handleLoginRedirect(tokens);
       })
       .catch((err: any) => {

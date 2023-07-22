@@ -8,9 +8,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class OrderHistoryService {
-  isAuthenticated: boolean = false;
-  private baseUrl = environment.backendBaseUrl;
-  private ordersUrl = `${this.baseUrl}/orders`;
+  private apiUrl = environment.backendBaseUrl;
+  private ordersUrl = `${this.apiUrl}/orders`;
   constructor(private httpClient: HttpClient) {}
 
   getOrderHistory(): Observable<OrderHistory[]> {

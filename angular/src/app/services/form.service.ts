@@ -10,10 +10,10 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class FormService {
-  private baseUrl = environment.backendBaseUrl;
-  private countriesUrl: string = `${this.baseUrl}/countries`;
-  private citiesUrl: string = `${this.baseUrl}/cities`;
-  private pageSize: number = 10_0000;
+  private apiUrl = environment.backendBaseUrl;
+  private countriesUrl: string = `${this.apiUrl}/countries`;
+  private citiesUrl: string = `${this.apiUrl}/cities`;
+  private pageSize: number = 350;
   constructor(private httpClient: HttpClient) {}
 
   getCreditCardMonths(startMonth: number): Observable<number[]> {
@@ -47,14 +47,12 @@ export class FormService {
 }
 
 export interface GetResponseCountries {
-  /* Grabbing the JSON data, unwrapping it, and then placing that data into an array of products.*/
   _embedded: {
     countries: Country[];
   };
 }
 
 export interface GetResponseCities {
-  /* Grabbing the JSON data, unwrapping it, and then placing that data into an array of products.*/
   _embedded: {
     cities: City[];
   };
