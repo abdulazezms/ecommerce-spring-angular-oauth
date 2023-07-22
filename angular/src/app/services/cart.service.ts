@@ -8,7 +8,6 @@ import { BehaviorSubject, Subject } from 'rxjs';
 export class CartService {
   cartItems: CartItem[] = [];
 
-  //a subject, a subclass of observable, is used to publish events to all subscribers in multicast mode, unlike unicast with observables.
   totalPrice: Subject<number> = new BehaviorSubject<number>(0);
   totalQuantity: Subject<number> = new BehaviorSubject<number>(0);
   shippingFee: number = 10;

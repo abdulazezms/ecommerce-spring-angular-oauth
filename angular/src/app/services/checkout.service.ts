@@ -8,8 +8,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class CheckoutService {
-  private baseUrl = environment.backendBaseUrl;
-  private purchaseUrl = `${this.baseUrl}/checkout/purchase`;
+  private apiUrl = environment.backendBaseUrl;
+  private purchaseUrl = `${this.apiUrl}/checkout/purchase`;
 
   constructor(private httpClient: HttpClient) {}
 

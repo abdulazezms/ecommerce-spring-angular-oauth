@@ -41,7 +41,7 @@ This project includes a Docker Compose configuration for easy deployment. To run
 ## Class Diagram
 The class diagram illustrates the key classes and their relationships.
 
-![Class Diagram](class-diagram.png)
+<img style="margin-top: 30px" src="class-diagram.png" alt="Class Diagram" height="1200px">
 
 ## Okta account Setup
 In the Angular codebase, the Okta account configuration can be found in ``src/environments/environment.prod.ts`` file. The current settings are:

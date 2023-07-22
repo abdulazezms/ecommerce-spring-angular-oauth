@@ -9,9 +9,9 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ProductService {
-  private baseUrl = environment.backendBaseUrl;
-  private productsUrl: string = `${this.baseUrl}/products`;
-  private categoryUrl: string = `${this.baseUrl}/product-category`;
+  private apiUrl = environment.backendBaseUrl;
+  private productsUrl: string = `${this.apiUrl}/products`;
+  private categoryUrl: string = `${this.apiUrl}/product-category`;
 
   constructor(private httpClient: HttpClient) {}
 
