@@ -1,27 +1,46 @@
-# AngularEcommerce
+# Full Stack Ecommerce Project
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.4.
+This repository contains the code for a full-stack ecommerce website, built with Angular and Spring Boot. The website offers a wide range of features, including form validation, a shopping cart, Okta integration for authentication, order history, and more.
 
-## Development server
+## Table of Contents
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+- [Class Diagram](#class-diagram)
+- [Contributing](#contributing)
 
-## Code scaffolding
+## Features
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Form validation.
+- Shopping cart functionality to add, remove, and manage selected items.
+- Okta integration for secure user authentication and authorization.
+- Order history to track past orders.
 
-## Build
+## Technologies Used
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+The main technologies used in this project are:
 
-## Running unit tests
+- Angular 16.1.0
+- Spring Boot 3.1.1
+- MySQL 8
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Getting Started
 
-## Running end-to-end tests
+This project includes a Docker Compose configuration for easy deployment. To run the application using Docker Compose, make sure you have Docker installed on your system and then follow these steps:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+1. Navigate to the root directory.
+1. Build the Docker images: `docker-compose build`. This might take a while depending on your internet speed.
+1. Launch the application: `docker-compose up`. This will start the frontend, backend, and MySQL database in separate containers and make the app accessible at `http://localhost:80`.
+1. For testing purposes, a user account has been created with the following credentials:
 
-## Further help
+   - Username: user@ecommerce.com
+   - Password: usr@ecom
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Class Diagram
+The class diagram illustrates the key classes and their relationships.
+![Class Diagram](class-diagram.png)
+
+## Contributing
+
+Contributions are welcomed to improve the project.
