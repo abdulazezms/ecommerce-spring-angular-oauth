@@ -8,7 +8,7 @@ This repository contains the code for a full-stack ecommerce website, built with
 - [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
 - [Class Diagram](#class-diagram)
-- [Contributing](#contributing)
+- [Contribution](#contribution)
 
 ## Features
 
@@ -39,8 +39,10 @@ This project includes a Docker Compose configuration for easy deployment. To run
 
 ## Class Diagram
 The class diagram illustrates the key classes and their relationships.
+
 ![Class Diagram](class-diagram.png)
 
-## Contributing
+## Contribution
 
-Contributions are welcomed to improve the project.
+Please fork the repository if you want to contribute to this project, then submit a pull request with your improvements. Any suggestions and comments are appreciated!
+
