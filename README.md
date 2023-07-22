@@ -44,7 +44,7 @@ The class diagram illustrates the key classes and their relationships.
 ![Class Diagram](class-diagram.png)
 
 ## Okta account Setup
-In the Angular codebase, the Okta account configuration can be found in the src/environments/environment.prod.ts file. The current settings are:
+In the Angular codebase, the Okta account configuration can be found in ``src/environments/environment.prod.ts`` file. The current settings are:
 ```export const environment = {
   oidc: {
     clientId: '0oaaeeost9XRbo0JD5d7',
