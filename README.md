@@ -7,7 +7,6 @@ This repository contains the code for a full-stack ecommerce website, built with
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
-- [Class Diagram](#class-diagram)
 - [Okta Account Setup](#okta-account-setup)
 - [Contribution](#contribution)
 
@@ -38,10 +37,6 @@ This project includes a Docker Compose configuration for easy deployment. To run
    - Username: user@ecommerce.com
    - Password: usr@ecom
 
-## Class Diagram
-The class diagram illustrates the key classes and their relationships.
-
-<img style="margin-top: 30px" src="class-diagram.png" alt="Class Diagram" height="1200px">
 
 ## Okta account Setup
 In the Angular codebase, the Okta account configuration can be found in ``src/environments/environment.prod.ts`` file. The current settings are:
