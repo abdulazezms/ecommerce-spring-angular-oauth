@@ -1,13 +1,8 @@
 # copied from .gitignore
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
 
 # Node
-/node_modules
+node_modules
 npm-debug.log
 yarn-error.log
 

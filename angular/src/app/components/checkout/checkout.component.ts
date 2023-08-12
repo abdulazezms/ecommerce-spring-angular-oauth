@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,11 +12,15 @@ import { City } from 'src/app/common/city';
 import { Country } from 'src/app/common/country';
 import { Order } from 'src/app/common/order';
 import { OrderItem } from 'src/app/common/order-item';
+import { PaymentInfo } from 'src/app/common/payment-info';
 import { Purchase } from 'src/app/common/purchase';
 import { CartService } from 'src/app/services/cart.service';
 import { CheckoutService } from 'src/app/services/checkout.service';
 import { FormService } from 'src/app/services/form.service';
 import { BusinessValidators } from 'src/app/validators/business-validators';
+import { environment } from 'src/environments/environment';
+import {OKTA_AUTH} from "@okta/okta-angular";
+import {OktaAuth, UserClaims} from "@okta/okta-auth-js";
 
 @Component({
   selector: 'app-checkout',
@@ -24,14 +28,18 @@ import { BusinessValidators } from 'src/app/validators/business-validators';
   styleUrls: ['./checkout.component.css'],
 })
 export class CheckoutComponent implements OnInit {
+  // initialize Stripe API
+  stripe = Stripe(environment.stripePublishableKey);
+  paymentInfo: PaymentInfo = new PaymentInfo();
+
+  cardElement: any;
+  displayError: any = '';
+
   checkoutFormGroup!: FormGroup;
 
-  totalPrice: number = 0;
+  orderPrice: number = 0;
   totalQuantity: number = 0;
   shippingFee: number = 0;
-
-  creditCardMonths: number[] = [];
-  creditCardYears: number[] = [];
 
   countries!: Country[];
   shippingCities!: City[];
@@ -39,32 +47,28 @@ export class CheckoutComponent implements OnInit {
 
   billingSameAsShipping: boolean = false;
 
+  isDisabled: boolean = false;
+
+  userProfile!: UserClaims;
+
   constructor(
     private fromBuilder: FormBuilder,
     private formService: FormService,
     private cartService: CartService,
     private checkoutService: CheckoutService,
-    private router: Router
+    private router: Router,
+    @Inject(OKTA_AUTH) private oktaAuth: OktaAuth
   ) {
     this.shippingFee = cartService.shippingFee;
   }
 
-  ngOnInit(): void {
-    this.reviewOrder();
+  async ngOnInit() {
+    //retrieve user profile
+    this.oktaAuth.getUser().then((value) => {
+      this.userProfile = value;
+    }).catch( (err) => {console.log("There was an error while fetching the user's details.")});
 
-    const startMonth = new Date().getMonth() + 1;
-
-    //populate years
-    this.formService.getCreditCardYears().subscribe((value: number[]) => {
-      this.creditCardYears = value;
-    });
-
-    //populate months
-    this.formService
-      .getCreditCardMonths(startMonth)
-      .subscribe((value: number[]) => {
-        this.creditCardMonths = value;
-      });
+    this.setupPaymentForm();
 
     //populate countries
     this.formService.getCountries().subscribe((data: Country[]) => {
@@ -106,24 +110,31 @@ export class CheckoutComponent implements OnInit {
       }),
 
       //Constructs a new `FormGroup` instance for payment details.
-      creditCard: this.fromBuilder.group({
-        cardType: new FormControl('', [Validators.required]),
-        nameOnCard: new FormControl('', [
-          Validators.required,
-          BusinessValidators.notEmpty,
-          Validators.minLength(2),
-        ]),
-        cardNumber: new FormControl('', [
-          Validators.required,
-          Validators.pattern('^[0-9]{16}$'),
-        ]),
-        securityCode: new FormControl('', [
-          Validators.required,
-          Validators.pattern('^[0-9]{3}$'),
-        ]),
-        expirationMonth: new FormControl('', []),
-        expirationYear: new FormControl('', []),
-      }),
+      creditCard: this.fromBuilder.group({}),
+    });
+
+    this.reviewOrder();
+  }
+  setupPaymentForm() {
+    // get a handle to stripe elements
+    var elements = this.stripe.elements();
+
+    // Create a card element ... and hide the zip-code field
+    this.cardElement = elements.create('card', { hidePostalCode: true });
+    // Add an instance of card UI component into the 'card-element' div
+    this.cardElement.mount('#card-element');
+
+    // Add event binding for the 'change' event on the card element
+    this.cardElement.on('change', (event: any) => {
+      // get a handle to card-errors element
+      this.displayError = document.getElementById('card-errors');
+
+      if (event.complete) {
+        this.displayError.textContent = '';
+      } else if (event.error) {
+        // show validation error to customer
+        this.displayError.textContent = event.error.message;
+      }
     });
   }
 
@@ -161,24 +172,6 @@ export class CheckoutComponent implements OnInit {
     return this.getControl('billingAddress', 'zipCode');
   }
 
-  //payment fields
-
-  get cardType() {
-    return this.getControl('creditCard', 'cardType');
-  }
-
-  get nameOnCard() {
-    return this.getControl('creditCard', 'nameOnCard');
-  }
-
-  get cardNumber() {
-    return this.getControl('creditCard', 'cardNumber');
-  }
-
-  get securityCode() {
-    return this.getControl('creditCard', 'securityCode');
-  }
-
   getControl(formGroupName: string, formControlName: string) {
     return this.checkoutFormGroup.get(`${formGroupName}.${formControlName}`);
   }
@@ -188,14 +181,17 @@ export class CheckoutComponent implements OnInit {
       this.copyShippingToBillingOperation();
     }
 
-    if (this.checkoutFormGroup.invalid) {
+    if (
+      this.checkoutFormGroup.invalid ||
+      this.displayError.textContent !== ''
+    ) {
       //touching all fields to trigger all error messages.
       this.checkoutFormGroup.markAllAsTouched();
       return;
     }
 
     //populate order and order items.
-    const order: Order = new Order(this.totalPrice, this.totalQuantity);
+    const order: Order = new Order(this.orderPrice, this.totalQuantity);
     const cartItems: CartItem[] = this.cartService.cartItems;
     const orderItems: OrderItem[] = cartItems.map(
       (cartItem) => new OrderItem(cartItem)
@@ -220,18 +216,65 @@ export class CheckoutComponent implements OnInit {
     purchase.order = order;
     purchase.billingAddress = billingAddress;
     purchase.shippingAddress = shippingAddress;
+    const total = this.orderPrice + this.shippingFee;
+    //compute amount in the lowest denomination
+    this.paymentInfo.amount = Math.round(total * 100);
+    console.log('The amount is ' + this.paymentInfo.amount);
+    this.paymentInfo.currency = 'USD';
+    this.paymentInfo.paymentMethod = 'card';
 
-    //place the order.
-    this.checkoutService.placeOrder(purchase).subscribe({
-      next: (response) => {
-        alert(
-          `Your order has been received.\nOrder tracking number: ${response.orderTrackingNumber}`
-        );
-        this.resetCart();
-      },
-      error: (response) => {
-        alert(`There was an error: ${response.message}`);
-      },
+    //disable purchase button
+    this.isDisabled = true;
+
+    //create a payment intent
+    this.checkoutService
+      .createPaymentIntent(this.paymentInfo)
+      .subscribe({
+        next: paymentIntent => {
+          console.log("I am in the next phase");
+          this.stripe
+            .confirmCardPayment(
+              paymentIntent.client_secret,
+              {
+                //send credit card data along with user's billing information to stripe's service.
+                payment_method: {
+                  card: this.cardElement,
+                  billing_details: {
+                    email: this.userProfile.email,
+                    name: `${this.userProfile.given_name} ${this.userProfile.family_name}`,
+                  },
+                },
+              },
+              {handleActions: false}
+            )
+            .then((result: any) => {
+              console.log("I am in the then phase ")
+              if (result.error) {
+                //an error occurred. Inform the user.
+                alert(`An error occurred: ${result.error.message} `);
+                this.isDisabled = false;
+              } else {
+                //successful; call the backend to place the order.
+                this.checkoutService.placeOrder(purchase).subscribe({
+                  next: (value: any) => {
+                    alert('Your order has been received!');
+                    this.resetCart();
+                    this.isDisabled = false;
+                    this.router.navigateByUrl('/history');
+                  },
+                  error: (error: any) => {
+                    alert(`An error occurred: ${error.message} `);
+                    this.isDisabled = false;
+                  },
+                });
+              }
+            });
+        },
+        error: err => {
+          alert(`Sorry, we weren't able to reach out to the payment processor. Try again later.`);
+          this.isDisabled = false;
+          this.router.navigateByUrl('/history');
+        }
     });
   }
 
@@ -253,24 +296,6 @@ export class CheckoutComponent implements OnInit {
     this.billingCities = this.shippingCities;
   }
 
-  handleYearChange() {
-    const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
-    const currentYear = new Date().getFullYear();
-    const selectedYear = +creditCardFormGroup?.get('expirationYear')?.value;
-    let startMonth = 1;
-
-    if (selectedYear === currentYear) {
-      startMonth = new Date().getMonth() + 1;
-    } else {
-      startMonth = 1;
-    }
-    this.formService
-      .getCreditCardMonths(startMonth)
-      .subscribe((value: number[]) => {
-        this.creditCardMonths = value;
-      });
-  }
-
   getCities(formGroupName: string) {
     const formGroup = this.checkoutFormGroup.get(formGroupName);
     const countryName = formGroup?.value.country.name;
@@ -286,7 +311,7 @@ export class CheckoutComponent implements OnInit {
 
   reviewOrder() {
     this.cartService.totalPrice.subscribe((value: number) => {
-      this.totalPrice = value;
+      this.orderPrice = value;
     });
 
     this.cartService.totalQuantity.subscribe((value: number) => {
@@ -295,14 +320,15 @@ export class CheckoutComponent implements OnInit {
   }
 
   resetCart() {
+    this.cartService.cartItems = [];
     //reset total price and quantity to 0, so all subscribers get to know.
     this.cartService.totalPrice.next(0);
+
     this.cartService.totalQuantity.next(0);
     this.shippingCities = [];
     this.billingCities = [];
     this.checkoutFormGroup.reset();
     this.billingSameAsShipping = false;
-    this.cartService.cartItems = [];
     sessionStorage.removeItem('cartItems');
     this.router.navigateByUrl('/history');
   }
