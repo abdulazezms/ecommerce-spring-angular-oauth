@@ -37,7 +37,7 @@ The main technologies used in this project are:
 
 ## Demo
 
-https://github.com/abdulazezms/ecommerce-angular-spring-oauth/assets/75917617/871026f6-4638-4ed4-90f6-ee9e8c20427a
+https://github.com/abdulazezms/ecommerce-spring-angular-oauth/assets/75917617/ba456ebc-4e20-4978-9530-868cce2a918e
 
 
 ## Stripe Integration
