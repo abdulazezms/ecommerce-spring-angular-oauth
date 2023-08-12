@@ -6,7 +6,7 @@
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Demo](#demo)
-- [Demo](#architecture-diagram)
+- [Architecture Diagram](#architecture-diagram)
 - [Okta Account Setup](#okta-account-setup)
 - [Stripe Integration](#stripe-integration)
 - [Customer Notifications](#customer-notifications)
@@ -43,7 +43,7 @@ https://github.com/abdulazezms/ecommerce-spring-angular-oauth/assets/75917617/ba
 ## Architecture Diagram
 
 
-<img src="images/architecture-diagram.png" alt="Architecture Diagram" width="1500" height="800">
+<img src="images/architecture-diagram.png" alt="Architecture Diagram" width="1500" height="700">
 
 
 
