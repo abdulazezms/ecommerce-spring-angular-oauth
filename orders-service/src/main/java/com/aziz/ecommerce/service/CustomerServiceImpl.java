@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class CustomerServiceImpl implements CustomerService{
-    private CustomerDao customerDao;
+    private final CustomerDao customerDao;
 
     public CustomerServiceImpl(CustomerDao customerDao){
         this.customerDao = customerDao;
@@ -31,6 +32,16 @@ public class CustomerServiceImpl implements CustomerService{
             return new ArrayList<>();
         }
         return customer.getOrders().stream().map(this::orderToOrderHistoryDto).toList();
+    }
+
+    @Override
+    public Optional<Customer> findByEmail(String email) {
+        return customerDao.findByEmail(email);
+    }
+
+    @Override
+    public Customer save(Customer customer) {
+        return customerDao.save(customer);
     }
 
     private OrderHistoryDto orderToOrderHistoryDto(Order order) {

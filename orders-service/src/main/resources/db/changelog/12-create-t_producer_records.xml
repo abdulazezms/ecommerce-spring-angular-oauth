@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+
+    <changeSet id="1" author="Aziz" >
+        <preConditions onFail="HALT">
+            <not>
+                <tableExists tableName="t_producer_records"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="t_producer_records">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="key_value" type="BIGINT"/>
+
+            <column name="record_value" type="text"/>
+
+            <column name="exception" type="text"/>
+
+            <column name="status" type="varchar(50)"/>
+
+
+            <column name="t_timestamp" type="BIGINT"/>
+
+        </createTable>
+    </changeSet>
+
+
+</databaseChangeLog>

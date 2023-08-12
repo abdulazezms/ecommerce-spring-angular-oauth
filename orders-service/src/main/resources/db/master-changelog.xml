@@ -19,5 +19,7 @@
     <include file="changelog/8-create-t_order_items.xml" relativeToChangelogFile="true"/>
     <include file="changelog/9-modify-t_addresses.xml" relativeToChangelogFile="true"/>
     <include file="changelog/10-modify-t_customers.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/11-create-t_orders_notifications.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/12-create-t_producer_records.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

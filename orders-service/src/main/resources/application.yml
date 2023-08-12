@@ -1,16 +1,26 @@
 spring:
 
+  kafka:
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 5
+      bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092,localhost:9093,localhost:9094}
+
+    bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092,localhost:9093,localhost:9094}
+
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/full-stack-ecommerce?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: ${DB_USERNAME:ecommerceapp}
     password: ${DB_PASSWORD:ecommerceapp}
+
   data:
     rest:
       #Only DAOs annotated will be exposed.
       detection-strategy: annotated
 
   jpa:
-   
     show-sql: true
     hibernate:
       ddl-auto: none
@@ -33,21 +43,17 @@ okta:
 env:
   allowed:
     origins: ${ALLOWED_ORIGINS:http://localhost:4200,http://localhost}
-#management:
-#  endpoints:
-#    web:
-#      base-path: /actuator
-#      exposure:
-#        include: [ "health","prometheus", "metrics" ]
-#  endpoint:
-#    health:
-#      show-details: always
-#    metrics:
-#      enabled: true
-#    prometheus:
+  topics:
+    order-events: order-events
+
 logging:
   level:
     org:
       springframework:
         web: DEBUG
         security: DEBUG
+
+stripe:
+  key:
+    secret: ${STRIPE_SECRET_API_KEY}
+
