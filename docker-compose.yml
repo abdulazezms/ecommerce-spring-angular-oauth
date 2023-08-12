@@ -14,7 +14,7 @@ services:
 
   backend:
     image: springboot-app:1
-    build: ./springboot
+    build: orders-service
     restart: always
     environment:
       DB_URL: jdbc:mysql://db:3306/full-stack-ecommerce?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
