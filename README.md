@@ -4,7 +4,8 @@
 ## Table of Contents
 
 - [Features](#features)
-- [Technologies Used](#technologies-used)
+- [Tech Stack](#tech-stack)
+- [Demo](#demo)
 - [Okta Account Setup](#okta-account-setup)
 - [Stripe Integration](#stripe-integration)
 - [Customer Notifications](#customer-notifications)
@@ -20,7 +21,7 @@
 - Producing order events with Kafka.
 - Consuming order events and sending notifications to customers.
 
-## Technologies Used
+## Tech Stack
 
 The main technologies used in this project are:
 
@@ -34,7 +35,9 @@ The main technologies used in this project are:
 - Docker
 - Nginx
 
+## Demo
 
+https://github.com/abdulazezms/ecommerce-angular-spring-oauth/assets/75917617/871026f6-4638-4ed4-90f6-ee9e8c20427a
 
 
 ## Stripe Integration
