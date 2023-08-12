@@ -1,0 +1,41 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/master-changelog.xml
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_HOST_USERNAME}
+    password: ${MAIL_HOST_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth:
+            true
+          starttls:
+            enable:
+              true
+
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      bootstrap-servers: ${BOOTSTRAP_SERVERS}
+      group-id: notifications-service-listeners-group
+      auto-offset-reset: latest
+    bootstrap-servers: ${BOOTSTRAP_SERVERS}
+    template:
+      default-topic: order-events
+
+  application:
+    name: notifications-service
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    show-sql: true
+env:
+  topics:
+    order-events: order-events
+
