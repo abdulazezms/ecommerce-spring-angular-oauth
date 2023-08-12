@@ -1,36 +1,118 @@
 version: "3.9"
 services:
-  db:
+
+
+  zoo1:
+    image: confluentinc/cp-zookeeper:7.3.2
+    platform: linux/amd64
+    hostname: zoo1
+    container_name: zoo1
+    ports:
+      - "2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_SERVERS: zoo1:2888:3888
+
+
+  kafka1:
+    image: confluentinc/cp-kafka:7.3.2
+    platform: linux/amd64
+    hostname: kafka1
+    container_name: kafka1
+    ports:
+      - "9092"
+      - "29092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:19092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092,DOCKER://host.docker.internal:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+    depends_on:
+      - zoo1
+
+
+  db-orders:
     image: mysql:8
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: full-stack-ecommerce
+      MYSQL_DATABASE: orders
     ports:
-      - "3316:3306"
+      - "3306"
     volumes:
-      - ./db:/var/lib/mysql
+      - ./db-orders:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", '-p$$MYSQL_ROOT_PASSWORD' ]
+      timeout: 20s
+      retries: 10
 
-  backend:
-    image: springboot-app:1
-    build: orders-service
+
+  orders-service:
+    image: orders-service:1
+    build: ./orders-service
     restart: always
     environment:
-      DB_URL: jdbc:mysql://db:3306/full-stack-ecommerce?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_URL: jdbc:mysql://db-orders:3306/orders?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
       DB_USERNAME: root
       DB_PASSWORD: root
-      OAUTH_ISSUER: https://dev-08064476.okta.com/oauth2/default
+      OAUTH_ISSUER: https://dev-08064476.okta.com/oauth2/default #update this with your app okta URL
       ALLOWED_ORIGINS: http://localhost
+      BOOTSTRAP_SERVERS: kafka1:19092
+      STRIPE_SECRET_API_KEY: "<your stripe secret key>"
     ports:
-      - "8090:8090"
+      - "8090"
     depends_on:
-      - db
-  frontend:
-    image: angular-app:1
+      db-orders:
+        condition: service_healthy
+      kafka1:
+        condition: service_started
+
+  db-notifications:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: notifications
+    ports:
+      - "3306"
+    volumes:
+      - ./db-notifications:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", '-p$$MYSQL_ROOT_PASSWORD' ]
+      timeout: 20s
+      retries: 10
+
+  notifications-service:
+    image: notifications-service:1
+    build: ./notifications-service
+    restart: always
+    environment:
+      BOOTSTRAP_SERVERS: kafka1:19092
+      MAIL_HOST_USERNAME: "<Your Username>"
+      MAIL_HOST_PASSWORD: "<Your app password>"
+      DB_URL: jdbc:mysql://db-notifications:3306/notifications?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    depends_on:
+      db-notifications:
+        condition: service_healthy
+
+  gateway:
+    image: gateway:1
     build: ./angular
     restart: always
     ports:
       - "80:80"
     depends_on:
-      - backend
+      - orders-service
+
+
+
+
