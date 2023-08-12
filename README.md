@@ -43,7 +43,7 @@ https://github.com/abdulazezms/ecommerce-spring-angular-oauth/assets/75917617/ba
 ## Architecture Diagram
 
 
-<img src="images/architecture-diagram.png" alt="Architecture Diagram" width="1500" height="600">
+<img src="images/architecture-diagram.png" alt="Architecture Diagram" width="1500" height="500">
 
 
 
