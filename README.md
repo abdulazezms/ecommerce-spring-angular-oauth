@@ -5,7 +5,6 @@
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
-- [Demo](#demo)
 - [Okta Account Setup](#okta-account-setup)
 - [Stripe Integration](#stripe-integration)
 - [Customer Notifications](#customer-notifications)
@@ -34,10 +33,6 @@ The main technologies used in this project are:
 - Okta
 - Docker
 - Nginx
-
-## Demo
-
-https://github.com/abdulazezms/ecommerce-spring-angular-oauth/assets/75917617/ba456ebc-4e20-4978-9530-868cce2a918e
 
 
 ## Stripe Integration
