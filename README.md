@@ -17,8 +17,8 @@
 - Okta integration for secure user authentication and authorization.
 - Order history to track past orders.
 - Payment processing with Stripe.
-- Producing order events with Kafka.
-- Consuming order events and sending notifications to customers.
+- Order events with Kafka.
+- Sending notifications to customers.
 
 ## Tech Stack
 
